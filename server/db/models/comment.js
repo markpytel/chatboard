@@ -24,6 +24,9 @@ var schema = new mongoose.Schema({
     downvotes: {
         type: [mongoose.Schema.Types.ObjectId],
         ref: 'User'
+    },
+    username: {
+        type: String
     }
 });
 
