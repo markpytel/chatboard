@@ -1,0 +1,64 @@
+#board {
+
+  margin: 0 auto;
+  width: 90%;
+  @include clearfix;
+
+  p {
+    width: 40%;
+    margin: 0 auto;
+    text-align: justify;
+    font-size: 22px;
+    font-weight: 300;
+    float: left;
+  }
+
+  .carousel {
+    float: right;
+    width: 55%;
+    overflow: hidden;
+    margin: 0 auto;
+    .carousel-inner {
+      height: 500px !important;
+    }
+    .carousel-control {
+      background: none;
+    }
+    .carousel-indicators {
+      display: none;
+    }
+    img {
+      max-width: 100%;
+      max-height: 500px;
+      display: block;
+      margin: 0 auto;
+    }
+  }
+
+  .comment {
+    width: 600px;
+    border: solid black 1px;
+  }
+
+  .nested {
+    width: 600px;
+    border: solid black 1px;
+    padding-left: 20px;
+  }
+
+  .reply:focus {
+    outline: none;
+  }
+
+  .reply {
+    width: 100%;
+    border: none;
+    resize: none;
+    height: 80px;
+  }
+
+  * {
+    word-wrap: break-word;
+  }
+
+}

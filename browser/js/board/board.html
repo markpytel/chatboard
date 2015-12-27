@@ -1,0 +1,177 @@
+<section id="board">
+
+<!-- 
+    <script type="text/ng-template" id="group-template.html">
+        <div class="panel {{panelClass || 'panel-default'}}">
+          <div class="panel-heading">
+            <h4 class="panel-title" style="color:#fa39c3">
+              <a href tabindex="0" class="accordion-toggle" ng-click="toggleOpen()" uib-accordion-transclude="heading"><span
+                ng-class="{'text-muted': isDisabled}">{{heading}}</span></a>
+            </h4>
+          </div>
+          <div class="panel-collapse collapse" uib-collapse="!isOpen">
+            <div class="panel-body" style="text-align: right" ng-transclude></div>
+          </div>
+        </div>
+    </script>
+ -->
+<!-- 
+    <script type="text/ng-template" id="commentTree">
+        <ul class="list-group" ng-if="child.children" style="padding-left: 5px; margin-bottom: 0px">
+            <div ng-repeat="child in child.children" style="border-left: solid Gainsboro 1px">
+                <div ng-click="child.hide = !child.hide" ng-hide="child.hide">
+                    <li style="padding-right: 0px; list-style-type: none">
+                        <span class="col-8" style="margin-left: 5px">{{child.body}}</span> 
+                        <span class="col-2">Eggnoodles</span>
+                    </li>
+                </div>
+                <div ng-show="child.hide">
+                    <li class="list-group-item" style="padding: 0px 15px; background-color:Gainsboro">
+                        <span class="col-2">Eggnoodles</span>
+                        <span class="col-2 pull-right" ng-click="formReply(child)">Reply</span>
+                    </li>
+                    <li class="list-group-item" style="padding-right: 0px" ng-click="child.hide = !child.hide">
+                        <span class="col-8">{{child.body}}</span>
+                    </li>
+                </div>
+                <div style="padding-left: 10px" ng-include="'commentTree'"></div>
+            </div>
+        </ul>
+    </script>
+ -->
+
+    <!-- template for nested replies -->
+    <script type="text/ng-template" id="commentTree">
+        <ul class="list-group" ng-if="child.children" style="padding-left: 5px; margin-bottom: 0px">
+            <div ng-repeat="child in child.children" style="border-left: solid Gainsboro 1px">
+                <div ng-click="hideshowPost(child)" ng-hide="determine(child)">
+                    <li style="padding-right: 0px; list-style-type: none">
+                        <span class="col-10" style="margin-left: 5px">{{child.body}}</span> 
+                        <span class="col-2">Eggnoodles</span>
+                    </li>
+                </div>
+                <li class="list-group-item" style="padding: 0px 15px; background-color:LightSteelBlue" ng-show="detSomeRep(child._id)">
+                    <span class="col-12">Someone is replying to this post</span>
+                </li>
+                <div ng-show="determine(child)">
+                    <li class="list-group-item" style="padding: 0px 15px; background-color:Gainsboro">
+                        <span class="col-2">Eggnoodles</span>
+                        <span class="col-2 pull-right" ng-click="formReply(child)">Reply</span>
+                    </li>
+                    <li class="list-group-item" style="padding-right: 0px" ng-click="hideshowPost(child)">
+                        <span class="col-12">{{child.body}}</span>
+                    </li>
+                </div>
+                <ul class="list-group" style="padding-left: 15px; margin-bottom: 0px;" ng-if="detRep(child)">
+                    <!-- reply header -->
+                    <li class="list-group-item" style="padding: 0px 15px; background-color:Gainsboro;">
+                        <span class="col-2">Eggnoodles</span>
+                        <span class="col-2 pull-right"></span>
+                    </li>
+                    <!-- reply body -->
+                    <li class="list-group-item" style="padding-right: 0px">
+                        <span class="col-12">
+                            <textarea class="reply" ng-model="reply.body" placeholder="Reply Here"></textarea>
+                            <button ng-click="submitReply()">Submit</button>
+                            <button ng-click="hideshowReply(child)">Cancel</button>
+                        </span>
+                    </li>
+                </ul>
+                <div style="padding-left: 10px" ng-include="'commentTree'"></div>
+            </div>
+        </ul>
+    </script>
+
+
+    <!-- initial posts -->
+    <ul class="list-group" ng-repeat="child in children">
+        <!-- post header -->
+        <li class="list-group-item" style="padding: 0px 15px; background-color:Gainsboro">
+            <span class="col-2">Eggnoodles</span>
+            <span class="col-2 pull-right" ng-click="formReply(child)">Reply</span>
+        </li>
+        <!-- post content -->
+        <li class="list-group-item" style="padding-right: 0px">
+            <span class="col-12">{{child.body}}</span>
+        </li>
+        <!-- post reply -->
+        <ul class="list-group" style="padding-left: 15px; margin-bottom: 0px;" ng-if="detRep(child)">
+            <!-- reply header -->
+            <li class="list-group-item" style="padding: 0px 15px; background-color:Gainsboro;">
+                <span class="col-2">Eggnoodles</span>
+                <span class="col-2 pull-right"></span>
+            </li>
+            <!-- reply body -->
+            <li class="list-group-item" style="padding-right: 0px">
+                <span class="col-12">
+                    <textarea class="reply" ng-model="reply.body" placeholder="Reply Here"></textarea>
+                    <button ng-click="submitReply()">Submit</button>
+                    <button ng-click="hideshowReply(child)">Cancel</button>
+                </span>
+            </li>
+        </ul>
+        <!-- someone replying -->
+        <li class="list-group-item" style="padding: 0px 15px; background-color:LightSteelBlue" ng-show="detSomeRep(child._id)">
+            <span class="col-12">Someone is replying to this post</span>
+        </li>
+        <!-- nested replies -->
+        <div style="padding-left: 10px" ng-include="'commentTree'"></div>
+    </ul>
+
+
+
+
+<!--     
+    <script type="text/ng-template" id="commentTree">
+        {{child.body}}
+        <br><br>
+        <span ng-click="formReply(child)">Reply</span>
+        <ul class='list-group' ng-if="child.children">
+            <li class='list-group-item' ng-repeat="child in child.children" ng-include="'commentTree'" style="padding-right: 0px">
+            </li>
+        </ul>
+    </script>
+
+
+	<ul class='list-group'>
+	    <li class='list-group-item' ng-repeat="child in children" ng-include="'commentTree'" style="padding-right: 0px"></li>
+	</ul>
+ -->
+
+<!-- 
+    <script type="text/ng-template" id="commentTree">
+        <div ng-if="child.children">
+            <uib-accordion ng-repeat="child in child.children">
+                <uib-accordion-group heading="Thread" panel-class="panel-info">
+                    {{ child.body }}
+                    <br><br>
+                    <button class="btn btn-info btn-xs" ng-click="formReply(child)">Reply</button>
+                    <div ng-include="'commentTree'">
+                    </div>
+                </uib-accordion-group>
+            </uib-accordion>
+        </div>
+    </script>
+
+    <div>
+        <uib-accordion ng-repeat="child in children">
+            <uib-accordion-group heading="Thread" panel-class="panel-info" is-open="status.isFirstOpen">
+                {{ child.body }}
+                <br><br>
+                <button class="btn btn-info btn-xs" ng-click="formReply(child)">Reply</button>
+                <div ng-include="'commentTree'">
+                </div>
+            </uib-accordion-group>
+        </uib-accordion>
+    </div>
+ -->
+
+
+	<div class="hidden">
+		Reply to: <textarea ng-model="reply.parent">{{reply.parent}}</textarea>
+		Author: <textarea ng-model="reply.author">{{reply.author}}</textarea>
+		<!-- Comment: <textarea ng-model="reply.body">{{reply.body}}</textarea> -->
+	</div>  
+
+
+</section>
