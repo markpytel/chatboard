@@ -48,6 +48,11 @@ app.controller('BoardController', function($state, $scope, comments, BoardFactor
 
     console.log($scope.user)
 
+    $scope.showEmoji = function (child) {
+        // console.log(EmojiPicker)
+        new EmojiPicker().discover()
+    }
+
     $scope.determine = function (child) {
         return child._id === $scope.displayed;
     }
