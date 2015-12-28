@@ -13,18 +13,14 @@ var schema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
     },
+    pmto: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    },
     parent: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Comment'
-    },
-    upvotes: {
-        type: [mongoose.Schema.Types.ObjectId],
-        ref: 'User'
-    },
-    downvotes: {
-        type: [mongoose.Schema.Types.ObjectId],
-        ref: 'User'
+        ref: 'PM'
     }
 });
 
-mongoose.model('Comment', schema);
+mongoose.model('PM', schema);

@@ -20,6 +20,15 @@ app.config(function($stateProvider) {
             },
             user: function(AuthService) {
                 return AuthService.getLoggedInUser()
+            },
+            pms: function(PMFactory) {
+                return PMFactory.getAllPMS();
+            },
+            sentpms: function(PMFactory) {
+                return PMFactory.getSentPMS();
+            },
+            recpms: function(PMFactory) {
+                return PMFactory.getRecPMS();
             }
         },
         data: {
@@ -29,7 +38,7 @@ app.config(function($stateProvider) {
 
 });
 
-app.controller('BoardController', function($state, $scope, comments, BoardFactory, Socket, reply, $stateParams, user) {
+app.controller('BoardController', function($state, $scope, comments, BoardFactory, Socket, reply, $stateParams, user, pms, sentpms, recpms) {
 
     $scope.comments = comments;
     $scope.children = [];
@@ -37,7 +46,13 @@ app.controller('BoardController', function($state, $scope, comments, BoardFactor
     $scope.reply = reply;
     $scope.user = user;
     $scope.currep;
+    $scope.pms = pms;
+    $scope.sentpms = sentpms;
+    $scope.recpms = recpms;
 
+    console.log('pms ', pms)
+
+    $scope.focus;
     $scope.ernot = null;
     $scope.displayed;
     $scope.replying = $scope.reply.parent;
@@ -48,10 +63,6 @@ app.controller('BoardController', function($state, $scope, comments, BoardFactor
 
     console.log($scope.user)
 
-    $scope.showEmoji = function (child) {
-        // console.log(EmojiPicker)
-        new EmojiPicker().discover()
-    }
 
     $scope.determine = function (child) {
         return child._id === $scope.displayed;
@@ -162,6 +173,7 @@ app.controller('BoardController', function($state, $scope, comments, BoardFactor
         // console.log('scopeuser',$scope.user)
         $scope.reply.parent = child._id;
         $scope.reply.author = $scope.user._id;
+        $scope.focus = true;
         Socket.emit('someoneReplying', {childId: child._id, username: $scope.user.username, prevcId: $scope.ernot})
     };
 

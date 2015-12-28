@@ -3,19 +3,28 @@
     <div ng-controller="ModalDemoCtrl">
         <script type="text/ng-template" id="myModalContent.html">
             <div class="modal-header">
-                <h3 class="modal-title">Im a modal!</h3>
+                <h3 style="text-align:center" class="modal-title">Message Center</h3>
             </div>
-            <button ng-show="hider" ng-click="hider = !hider">Show</button>
-            <button ng-hide="hider" ng-click="hider = !hider">Hide</button>
-            <div class="modal-body">
-                <ul>
-                    <li ng-repeat="item in items">
-                        <a href="#" ng-click="$event.preventDefault(); selected.item = item">{{ item }}</a>
+            <div class="col-sm-12" style="background-color:Gainsboro; border: 1px solid red; padding: 0px 0px">
+                <span class="col-sm-4" style="border: 1px solid red">Compose</span>
+                <span class="col-sm-4" style="border: 1px solid red">Inbox</span>
+                <span class="col-sm-4" style="border: 1px solid red">Sent</span>
+            </div>
+            <div class="modal-body" style="height:400px; overflow-y: scroll" >
+                <ul class="list-group">
+                    <li class="list-group-item" ng-repeat="pm in sentpms">
+                        <a href="#" ng-click="$event.preventDefault(); selected.item = item">{{ pm.body }}</a>
                     </li>
                 </ul>
-                Selected: <b>{{ selected.item }}</b>
+                <ul class="list-group">
+                    <li class="list-group-item" ng-repeat="pm in recpms">
+                        <a href="#" ng-click="$event.preventDefault(); selected.item = item">{{ pm.body }}</a>
+                    </li>
+                </ul>
             </div>
             <div class="modal-footer">
+                <button ng-show="hider" ng-click="hider = !hider">Show</button>
+                <button ng-hide="hider" ng-click="hider = !hider">Hide</button>
                 <button type="button" ng-click="ok()">OK</button>
                 <button type="button" ng-click="cancel()">Cancel</button>
             </div>
@@ -85,7 +94,7 @@
                         <span class="col-12">{{child.body}}</span>
                     </li>
                 </div>
-                <ul class="list-group" style="padding-left: 15px; margin-bottom: 0px;" ng-if="detRep(child)">
+                <ul focus-on-show class="list-group" style="padding-left: 15px; margin-bottom: 0px;" ng-show="detRep(child)">
                     <!-- reply header -->
                     <li class="list-group-item" style="padding: 0px 15px; background-color:Gainsboro;">
                         <span class="col-2">{{child.author.username}}</span>
@@ -96,7 +105,7 @@
                         <span class="col-12">
                             <textarea class="reply" ng-model="reply.body" placeholder="Reply Here"></textarea>
                             <button ng-click="submitReply()">Submit</button>
-                            <button ng-click="hideshowReply(child)">Cancel</button>
+                            <button ng-click="formReply(child)">Cancel</button>
                         </span>
                     </li>
                 </ul>
@@ -121,7 +130,7 @@
             <span class="col-12">{{child.body}}</span>
         </li>
         <!-- post reply -->
-        <ul class="list-group" style="padding-left: 15px; margin-bottom: 0px;" ng-show="detRep(child)">
+        <ul focus-on-show class="list-group" style="padding-left: 15px; margin-bottom: 0px;" ng-show="detRep(child)">
             <!-- reply header -->
             <li class="list-group-item" style="padding: 0px 15px; background-color:Gainsboro;">
                 <span class="col-2">{{user.username}}</span>
@@ -132,7 +141,7 @@
                 <span class="col-12">
                     <textarea class="reply" ng-model="reply.body" placeholder="Reply Here"></textarea>
                     <button ng-click="submitReply()">Submit</button>
-                    <button ng-click="hideshowReply(child)">Cancel</button>
+                    <button ng-click="formReply(child)">Cancel</button>
                 </span>
             </li>
         </ul>
@@ -192,19 +201,20 @@
     </div>
  -->
 
-
+<!-- 
     <span>
         Reply to: <textarea ng-model="reply.parent">{{reply.parent}}</textarea>
-        Author: <textarea ng-model="reply.author">{{reply.author}}</textarea>
-        <!-- Comment: <textarea ng-model="reply.body">{{reply.body}}</textarea> -->
+        Author: <textarea focus="focus" ng-model="reply.author">{{reply.author}}</textarea>
+        Comment: <textarea ng-model="reply.body">{{reply.body}}</textarea>
     </span>  
 
     <span style="float:right">
         <emoji>:smile:</emoji>
     </span>
+    <i class="emoji--smile" title=" smile" style="float:right">smile</i>
 
 
-
+ -->
 
 
 </section>
