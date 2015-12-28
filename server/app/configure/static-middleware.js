@@ -18,5 +18,4 @@ module.exports = function (app) {
     app.use(express.static(browserPath));
     app.use(express.static(emojiPath));
 
-
 };
