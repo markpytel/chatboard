@@ -47,15 +47,12 @@
                 <div ng-click="hideshowPost(child)" ng-hide="determine(child)">
                     <li style="padding-right: 0px; list-style-type: none">
                         <span class="col-10" style="margin-left: 5px">{{child.body}}</span> 
-                        <span class="col-2">Eggnoodles</span>
+                        <span class="col-2">{{child.author.username}}</span>
                     </li>
                 </div>
-                <li class="list-group-item" style="padding: 0px 15px; background-color:LightSteelBlue" ng-show="detSomeRep(child._id)">
-                    <span class="col-12">Someone is replying to this post</span>
-                </li>
                 <div ng-show="determine(child)">
                     <li class="list-group-item" style="padding: 0px 15px; background-color:Gainsboro">
-                        <span class="col-2">Eggnoodles</span>
+                        <span class="col-2">{{child.author.username}}</span>
                         <span class="col-2 pull-right" ng-click="formReply(child)">Reply</span>
                     </li>
                     <li class="list-group-item" style="padding-right: 0px" ng-click="hideshowPost(child)">
@@ -65,7 +62,7 @@
                 <ul class="list-group" style="padding-left: 15px; margin-bottom: 0px;" ng-if="detRep(child)">
                     <!-- reply header -->
                     <li class="list-group-item" style="padding: 0px 15px; background-color:Gainsboro;">
-                        <span class="col-2">Eggnoodles</span>
+                        <span class="col-2">{{child.author.username}}</span>
                         <span class="col-2 pull-right"></span>
                     </li>
                     <!-- reply body -->
@@ -77,6 +74,9 @@
                         </span>
                     </li>
                 </ul>
+                <li class="list-group-item" style="padding: 0px 15px; background-color:LightSteelBlue" ng-show="detSomeRep(child._id, currep)">
+                    <span class="col-12">Someone is replying to this post</span>
+                </li>
                 <div style="padding-left: 10px" ng-include="'commentTree'"></div>
             </div>
         </ul>
@@ -87,7 +87,7 @@
     <ul class="list-group" ng-repeat="child in children">
         <!-- post header -->
         <li class="list-group-item" style="padding: 0px 15px; background-color:Gainsboro">
-            <span class="col-2">Eggnoodles</span>
+            <span class="col-2">{{child.author.username}}</span>
             <span class="col-2 pull-right" ng-click="formReply(child)">Reply</span>
         </li>
         <!-- post content -->
@@ -95,10 +95,10 @@
             <span class="col-12">{{child.body}}</span>
         </li>
         <!-- post reply -->
-        <ul class="list-group" style="padding-left: 15px; margin-bottom: 0px;" ng-if="detRep(child)">
+        <ul class="list-group" style="padding-left: 15px; margin-bottom: 0px;" ng-show="detRep(child)">
             <!-- reply header -->
             <li class="list-group-item" style="padding: 0px 15px; background-color:Gainsboro;">
-                <span class="col-2">Eggnoodles</span>
+                <span class="col-2">{{user.username}}</span>
                 <span class="col-2 pull-right"></span>
             </li>
             <!-- reply body -->
@@ -111,7 +111,7 @@
             </li>
         </ul>
         <!-- someone replying -->
-        <li class="list-group-item" style="padding: 0px 15px; background-color:LightSteelBlue" ng-show="detSomeRep(child._id)">
+        <li class="list-group-item" style="padding: 0px 15px; background-color:LightSteelBlue" ng-show="detSomeRep(child._id, currep)">
             <span class="col-12">Someone is replying to this post</span>
         </li>
         <!-- nested replies -->
@@ -167,11 +167,16 @@
  -->
 
 
-	<div class="hidden">
-		Reply to: <textarea ng-model="reply.parent">{{reply.parent}}</textarea>
-		Author: <textarea ng-model="reply.author">{{reply.author}}</textarea>
-		<!-- Comment: <textarea ng-model="reply.body">{{reply.body}}</textarea> -->
-	</div>  
+    <span>
+        Reply to: <textarea ng-model="reply.parent">{{reply.parent}}</textarea>
+        Author: <textarea ng-model="reply.author">{{reply.author}}</textarea>
+        <!-- Comment: <textarea ng-model="reply.body">{{reply.body}}</textarea> -->
+    </span>  
+
+    <span style="float:right">
+        <emoji>:smile:</emoji>
+    </span>
+
 
 
 </section>
