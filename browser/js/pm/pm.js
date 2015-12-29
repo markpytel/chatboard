@@ -55,6 +55,14 @@ app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, items, 
   $scope.sentpms = sentpms;
   $scope.recpms = recpms;
 
+  $scope.view='rec';
+
+  $scope.setView = function (view) {
+    console.log('view in setview ', view)
+    $scope.view = view;
+  }
+
+
   console.log('inside modal instance', $scope.sentpms)
   console.log('inside modal instance', $scope.recpms)
 
