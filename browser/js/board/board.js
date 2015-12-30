@@ -29,6 +29,8 @@ app.config(function($stateProvider) {
             },
             recpms: function(PMFactory) {
                 return PMFactory.getRecPMS();
+            },
+            somerep: function(Socket) {
             }
         },
         data: {
@@ -48,10 +50,8 @@ app.controller('BoardController', function($state, $scope, comments, BoardFactor
     $scope.reply = reply;
     $scope.user = user;
     $scope.users = users;
-    $scope.currep;
     $scope.sentpms = sentpms;
     $scope.recpms = recpms;
-    $scope.focus;
     $scope.erasenot = null;
     $scope.displayed;
     $scope.replying = $scope.reply.parent;
@@ -85,7 +85,7 @@ app.controller('BoardController', function($state, $scope, comments, BoardFactor
             $scope.replying = child._id;
         }
     };
-    $scope.detSomeRep = function(child, work) {
+    $scope.detSomeRep = function(child) {
         // console.log('during')
         // // console.log('IMPORTANT',child+""+work)
         // console.log($scope.somerep, child + "" + work)
@@ -104,17 +104,21 @@ app.controller('BoardController', function($state, $scope, comments, BoardFactor
     // Event listeners
 
     window.onbeforeunload = function () {
-        Socket.emit('someoneReplying', {
-            childId: $scope.replying,
-            username: $scope.user.username
-        })
+        if($scope.replying){
+            Socket.emit('someoneReplying', {
+                childId: $scope.replying,
+                username: $scope.user.username
+            })
+        }
     }
 
     $scope.$on('$stateChangeStart', function () {
-        Socket.emit('someoneReplying', {
-            childId: $scope.replying,
-            username: $scope.user.username
-        })
+        if($scope.replying){
+            Socket.emit('someoneReplying', {
+                childId: $scope.replying,
+                username: $scope.user.username
+            })
+        }
     })
 
     Socket.on('newPost', function() {
@@ -137,25 +141,37 @@ app.controller('BoardController', function($state, $scope, comments, BoardFactor
         // }
     });
 
-    Socket.on('someoneReplying', function(event) {
-        $scope.currep = event.username;
-        // console.log('currep in socket ', $scope.currep)
-        // console.log('event is: ', event.childId)
-        // console.log(event.username, ' is replying to something')
-        console.log('magic element ', event.prevcId)
-        if (event.prevcId) {
-            var cid = $scope.somerep.indexOf(event.prevcId + "" + event.username);
-            if (cid !== -1) $scope.somerep.splice(cid, 1);
-        }
-        var eid = $scope.somerep.indexOf(event.childId + "" + $scope.currep)
-        if (eid !== -1) $scope.somerep.splice(eid, 1);
-        else $scope.somerep.push(event.childId + "" + $scope.currep)
+    // Socket.on('someoneReplying', function(event) {
+    //     // console.log('currep in socket ', $scope.currep)
+    //     // console.log('event is: ', event.childId)
+    //     // console.log(event.username, ' is replying to something')
+    //     console.log('magic element ', event.prevcId)
+    //     if (event.prevcId) {
+    //         var cid = $scope.somerep.indexOf(event.prevcId + "" + event.username);
+    //         if (cid !== -1) $scope.somerep.splice(cid, 1);
+    //     }
+    //     var eid = $scope.somerep.indexOf(event.childId + "" + event.username)
+    //     if (eid !== -1) $scope.somerep.splice(eid, 1);
+    //     else $scope.somerep.push(event.childId + "" + event.username)
 
-        // console.log('array of replies ', $scope.somerep)
-        // console.log($scope.detSomeRep(event.childId))
-        // console.log('before')
+    //     // console.log('array of replies ', $scope.somerep)
+    //     // console.log($scope.detSomeRep(event.childId))
+    //     // console.log('before')
+    //     $scope.$apply();
+    //     // console.log('after')
+    // })
+
+    Socket.on('someoneReplying', function (event) {
+        console.log('event in somerep', event)
+        $scope.somerep = event.somerep
         $scope.$apply();
-        // console.log('after')
+    })
+
+    Socket.on('message', function (event) {
+        console.log('hello from socket you get your scope data this way')
+        $scope.somerep = event.somerep;
+        console.log('people replying ', event)
+        $scope.$apply();
     })
 
 
@@ -183,13 +199,13 @@ app.controller('BoardController', function($state, $scope, comments, BoardFactor
 
     $scope.formReply = function(child) {
         console.log('child local ', child)
+
         if (child.parent === null) $scope.hideshowPost(child)
         $scope.hideshowReply(child);
-        // console.log('Child from reply button ', child);
-        // console.log('scopeuser',$scope.user)
+
         $scope.reply.parent = child._id;
         $scope.reply.author = $scope.user._id;
-        $scope.focus = true;
+
         Socket.emit('someoneReplying', {
             childId: child._id,
             username: $scope.user.username,

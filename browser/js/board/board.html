@@ -78,7 +78,7 @@
                         </span>
                     </li>
                 </ul>
-                <li class="list-group-item" style="padding: 0px 15px; background-color:LightSteelBlue" ng-show="detSomeRep(child._id, currep)">
+                <li class="list-group-item" style="padding: 0px 15px; background-color:LightSteelBlue" ng-show="detSomeRep(child._id)">
                     <span class="col-12">Someone is replying to this post</span>
                 </li>
                 <div style="padding-left: 10px" ng-include="'commentTree'"></div>
@@ -116,7 +116,7 @@
             </li>
         </ul>
         <!-- someone replying -->
-        <li class="list-group-item" style="padding: 0px 15px; background-color:LightSteelBlue" ng-show="detSomeRep(child._id, currep)">
+        <li class="list-group-item" style="padding: 0px 15px; background-color:LightSteelBlue" ng-show="detSomeRep(child._id)">
             <span class="col-12">Someone is replying to this post</span>
         </li>
         <!-- nested replies -->

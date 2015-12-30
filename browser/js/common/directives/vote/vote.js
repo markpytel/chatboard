@@ -7,9 +7,9 @@ app.directive('vote', function () {
 			scope.total = scope.child.upvotes.length - scope.child.downvotes.length
 			if (scope.total.toString().length === 1) scope.total = "\u00A0" + scope.total
 			
-			console.log('scope ', scope)
-			console.log('upvotes ', scope.child.upvotes.length)
-			console.log('downvotes ', scope.child.downvotes.length)
+			// console.log('scope ', scope)
+			// console.log('upvotes ', scope.child.upvotes.length)
+			// console.log('downvotes ', scope.child.downvotes.length)
 		}
 	}
 })
