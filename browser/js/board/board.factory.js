@@ -25,10 +25,19 @@ app.factory('BoardFactory', function ($http) {
 		});
 	}
 
+	// this will eventually have downvotes and upvotes attached too
+	function getUsernames() {
+		return $http.get('/api/users/usernames').then(function (response) {
+			return response.data
+		})
+	}
+
+
 	return {
 		getAllComments: getAllComments,
 		getNestedComments: getNestedComments,
 		getRootComments: getRootComments,
-		postNewComment: postNewComment
+		postNewComment: postNewComment,
+		getUsernames: getUsernames
 	};
 });

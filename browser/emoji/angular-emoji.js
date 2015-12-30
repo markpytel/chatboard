@@ -11,9 +11,11 @@ angular.module( "emoji", [] )
       },
       link: function ( scope, element, attributes ) {
         var input = scope.source || element.html();
+        // console.log('input ', input)
         var output = input.replace( /:([a-z0-1-+]+):/g, function ( match, text ) {
           return "<i class=\"emoji--" + text + "\" title=\" " + text + "\">" + text + "</i>"
         } );
+        // console.log('output ', output)
         element.html(output);
       }
     }

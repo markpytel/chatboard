@@ -1,0 +1,61 @@
+<div ng-controller="ModalDemoCtrl">
+    <script type="text/ng-template" id="customPopupTemplate.html">
+        <div class="custom-popup-wrapper" ng-style="{top: position().top+'px', left: position().left+'px'}" style="display: block;" ng-show="isOpen() && !moveInProgress" aria-hidden="{{!isOpen()}}">
+            <p class="message">select location from drop down.</p>
+            <ul class="dropdown-menu" role="listbox">
+                <li ng-repeat="match in matches track by $index" ng-class="{active: isActive($index) }" ng-mouseenter="selectActive($index)" ng-click="selectMatch($index)" role="option" id="{{::match.id}}">
+                    <div uib-typeahead-match index="$index" match="match" query="query" template-url="templateUrl"></div>
+                </li>
+            </ul>
+        </div>
+    </script>
+    <script type="text/ng-template" id="myModalContent.html">
+        <div class="modal-header">
+            <h3 style="text-align:center" class="modal-title">Message Center</h3>
+        </div>
+        <div class="col-sm-12" style="background-color:Gainsboro; border: 1px solid grey; padding: 0px 0px">
+            <div class="btn-group btn-group-justified" role="group" aria-label="...">
+                <div ng-click="setView('rec')" class="btn-group" role="group">
+                    <button type="button" style="background-color:Gainsboro" class="btn btn-default">Inbox</button>
+                </div>
+                <div ng-click="setView('sent')" class="btn-group" role="group">
+                    <button type="button" style="background-color:Gainsboro" class="btn btn-default">Sent</button>
+                </div>
+            </div>
+        </div>
+        <div class="modal-body" style="height:300px; overflow-y: scroll">
+            <ul ng-show="view==='sent'" class="list-group">
+                <li class="list-group-item" ng-repeat="pm in sentpms">
+                    <a href="#" ng-click="$event.preventDefault(); selected.item = item">To: {{pm.pmto.username}}: {{pm.body}}</a>
+                </li>
+            </ul>
+            <ul ng-show="view==='rec'" class="list-group">
+                <li class="list-group-item" ng-repeat="pm in recpms">
+                    <a href="#" ng-click="$event.preventDefault(); selected.item = item">From: {{pm.author.username}}: {{pm.body}}</a>
+                </li>
+            </ul>
+        </div>
+        <div style="border-top: solid Gainsboro 1px; height:105px">
+            <li class="list-group-item" style="padding-right: 0px">
+                <textarea class="reply" ng-model="newPM.body" placeholder="Message Here"></textarea>
+            </li>
+        </div>
+        <div class="modal-footer">
+            <div class="input-group">
+                <span class="input-group-addon" id="sizing-addon2"><i class="fa fa-at"></i></span>
+                <input switch-focus autofocus type="text" class="form-control" placeholder="Username" aria-describedby="sizing-addon2" uib-typeahead="user for user in users | filter:$viewValue" ng-model="newPM.pmto"></input>
+                <span ng-click="validUser()" class="input-group-addon" id="sizing-addon2"><i class="fa fa-paper-plane"></i></span>
+            </div>
+            <!--
+            <button ng-show="hider" ng-click="hider = !hider">Show</button>
+            <button ng-hide="hider" ng-click="hider = !hider">Hide</button>
+            <button type="button" ng-click="ok()">OK</button>
+            <button type="button" ng-click="cancel()">Cancel</button>
+        -->
+        </div>
+    </script>
+    <div class="row" style="height:60px">
+        <button type="button" class="btn btn-default pull-right" ng-click="open()">Private Message</button>
+    </div>
+    <div ng-show="selected">Selection from a modal: {{ selected }}</div>
+</div>

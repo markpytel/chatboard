@@ -3,7 +3,7 @@ var router = require('express').Router();
 var _ = require('lodash');
 module.exports = router;
 var mongoose = require('mongoose');
-var Comment = mongoose.model('Comment');
+var User = mongoose.model('User');
 
 var ensureAuthenticated = function (req, res, next) {
     if (req.isAuthenticated()) {
@@ -27,29 +27,22 @@ var ensureAuthenticated = function (req, res, next) {
 
 router.get('/', ensureAuthenticated, function (req, res, next) {
 	console.log('Inside route')
-	Comment.find().populate('author').exec()
-	.then(function(comments){
+	PM.find().populate('author').exec()
+	.then(function(pms){
 		console.log('Inside query')
-		res.status(200).json(comments);
+		res.status(200).json(pms);
 	}).then(null, next)
 
 });
 
-router.get('/nested', function (req, res, next) {
-	Comment.find({parent: {$ne: null}}).then(function(comments) {
-		res.status(200).json(comments);
+router.get('/usernames', ensureAuthenticated, function (req, res, next) {
+
+	User.find().populate('author').exec()
+	.then(function(users){
+		var usernames = []
+		users.forEach(function(user){
+			usernames.push(user.username)
+		})
+		res.status(200).json(usernames);
 	}).then(null, next)
 });
-
-router.get('/root', function (req, res, next) {
-	Comment.find({parent: null}).then(function(comments) {
-		res.status(200).json(comments);
-	}).then(null, next)
-})
-
-router.post('/', ensureAuthenticated, function (req, res, next) {
-	console.log('Body inside ', req.body)
-	Comment.create(req.body).then(function(comment) {
-		res.status(200).json(comment);
-	}).then(null, next)
-})
