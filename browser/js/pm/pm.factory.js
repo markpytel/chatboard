@@ -16,11 +16,11 @@ app.factory('PMFactory', function ($http) {
 	function getRecPMS() {
 		return $http.get('/api/pms/rec').then(function (response) {
 			return response.data;
-		});		
+		});
 	}
 
 
-	function postNewPM(comment) {
+	function postNewPM(pm) {
 		return $http.post('/api/pms/', pm).then(function (response) {
 			return response.data;
 		});

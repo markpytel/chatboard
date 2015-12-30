@@ -1,57 +1,5 @@
 <section id="board">
-    <div ng-controller="ModalDemoCtrl">
-        <script type="text/ng-template" id="myModalContent.html">
-            <div class="modal-header">
-                <h3 style="text-align:center" class="modal-title">Message Center</h3>
-            </div>
-            <div class="col-sm-12" style="background-color:Gainsboro; border: 1px solid grey; padding: 0px 0px">
-                <div class="btn-group btn-group-justified" role="group" aria-label="...">
-                    <div ng-click="setView('rec')" class="btn-group" role="group">
-                        <button type="button" style="background-color:Gainsboro" class="btn btn-default">Inbox</button>
-                    </div>
-                    <div ng-click="setView('sent')" class="btn-group" role="group">
-                        <button type="button" style="background-color:Gainsboro" class="btn btn-default">Sent</button>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-body" style="height:300px; overflow-y: scroll">
-                <ul ng-show="view==='sent'" class="list-group">
-                    <li class="list-group-item" ng-repeat="pm in sentpms">
-                        <a href="#" ng-click="$event.preventDefault(); selected.item = item">{{ pm.body }}</a>
-                    </li>
-                </ul>
-                <ul ng-show="view==='rec'" class="list-group">
-                    <li class="list-group-item" ng-repeat="pm in recpms">
-                        <a href="#" ng-click="$event.preventDefault(); selected.item = item">{{ pm.body }}</a>
-                    </li>
-                </ul>
-            </div>
-            <div style="border-top: solid Gainsboro 1px; height:105px">
-                <li class="list-group-item" style="padding-right: 0px">
-                    <span class="col-12">
-                            <textarea class="reply" ng-model="reply.body" placeholder="Message Here"></textarea>
-                    </span>
-                </li>
-            </div>
-            <div class="modal-footer">
-                <div class="input-group">
-                    <span class="input-group-addon" id="sizing-addon2">@</span>
-                    <input autofocus type="text" class="form-control" placeholder="Username" aria-describedby="sizing-addon2">
-                    <span class="input-group-addon" id="sizing-addon2"><i class="fa fa-reply"></i></span>
-                </div>
-                <!--
-                <button ng-show="hider" ng-click="hider = !hider">Show</button>
-                <button ng-hide="hider" ng-click="hider = !hider">Hide</button>
-                <button type="button" ng-click="ok()">OK</button>
-                <button type="button" ng-click="cancel()">Cancel</button>
-            -->
-            </div>
-        </script>
-        <div class="row" style="height:60px">
-            <button type="button" class="btn btn-default pull-right" ng-click="open()">Private Message</button>
-        </div>
-        <div ng-show="selected">Selection from a modal: {{ selected }}</div>
-    </div>
+    <modalpm></modalpm>
     <!-- 
     <script type="text/ng-template" id="group-template.html">
         <div class="panel {{panelClass || 'panel-default'}}">
@@ -137,7 +85,7 @@
         <!-- post header -->
         <li class="list-group-item" style="padding: 0px 15px; background-color:Gainsboro">
             <span class="col-2">{{child.author.username}}</span>
-            <span class="col-2 pull-right" ng-click="formReply(child)">Reply</span>
+            <span class="col-2 pull-right" ng-click="formReply(child)"><i class="fa fa-reply"></i></span>
         </li>
         <!-- post content -->
         <li class="list-group-item" style="padding-right: 0px">
@@ -154,8 +102,8 @@
             <li class="list-group-item" style="padding-right: 0px">
                 <span class="col-12">
                     <textarea class="reply" ng-model="reply.body" placeholder="Reply Here"></textarea>
-                    <button ng-click="submitReply()">Submit</button>
-                    <button ng-click="formReply(child)">Cancel</button>
+                    <button ng-click="submitReply()"><i class="fa fa-paper-plane"></i></button>
+                    <button ng-click="formReply(child)"><i class="fa fa-times"></i></button>
                 </span>
             </li>
         </ul>
@@ -209,12 +157,12 @@
         </uib-accordion>
     </div>
  -->
-    <!-- 
-    <span>
+    
+<!--     <span>
         Reply to: <textarea ng-model="reply.parent">{{reply.parent}}</textarea>
         Author: <textarea focus="focus" ng-model="reply.author">{{reply.author}}</textarea>
         Comment: <textarea ng-model="reply.body">{{reply.body}}</textarea>
-    </span>  
+    </span>   -->
 
     <span style="float:right">
         <emoji>:smile:</emoji>
@@ -222,5 +170,5 @@
     <i class="emoji--smile" title=" smile" style="float:right">smile</i>
 
 
- -->
+
 </section>

@@ -50,16 +50,16 @@ app.directive('focusOnShow', function($timeout) {
         link: function($scope, $element, $attr) {
             // console.log('attr' ,$attr)
             // console.log('elem' ,$element.children())
-            if ($attr.ngShow){
-                $scope.$watch($attr.ngShow, function(newValue){
+            if ($attr.ngShow) {
+                $scope.$watch($attr.ngShow, function(newValue) {
                     // console.log('$scope ',$scope)
-                    if(newValue){
-                        $timeout(function(){
+                    if (newValue) {
+                        $timeout(function() {
                             // console.log('attempt to focus', $element[0])
                             $element[0].children[1].children[0].children[0].focus();
                         }, 0);
                     }
-                })      
+                })
             }
             // if ($attr.ngHide){
             //     $scope.$watch($attr.ngHide, function(newValue){
@@ -70,9 +70,22 @@ app.directive('focusOnShow', function($timeout) {
             //         }
             //     })      
             // }
-
         }
     };
+})
+
+app.directive('switchFocus', function() {
+    return {
+        restrict: 'A',
+        link: function(scope, element, attrs) {
+            element.bind("keydown keypress", function(event) {
+                if (event.which === 13) {
+                    element.parent().parent()[0].previousElementSibling.children[0].children[0].focus()
+                    event.preventDefault();
+                }
+            });
+        }
+    }
 })
 
 
