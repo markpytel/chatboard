@@ -10,7 +10,9 @@ module.exports = function (server) {
 
     io.on('connection', function (socket) {
         // Now have access to socket, wowzers!
-        console.log('A new client has connected!');
+        var somerep = [];
+
+        console.log('A new client has connected! replies in progress ', somerep);
         console.log(socket.id);
         socket.broadcast.emit('message', 'A new socket has connected')
         socket.on('newPost', function(event){
@@ -22,6 +24,9 @@ module.exports = function (server) {
             console.log('event ', event);
             socket.broadcast.emit('someoneReplying', event)
         })
+
+
+
     });
     
     return io;

@@ -50,12 +50,17 @@
                     </li>
                 </div>
                 <div ng-show="determine(child)">
+                    <!-- post header -->
                     <li class="list-group-item" style="padding: 0px 15px; background-color:Gainsboro">
                         <span class="col-2">{{child.author.username}}</span>
-                        <span class="col-2 pull-right" ng-click="formReply(child)">Reply</span>
+                        <span class="col-2 pull-right" ng-click="formReply(child)"><i class="fa fa-reply"></i></span>
                     </li>
+                    <!-- post content -->
                     <li class="list-group-item" style="padding-right: 0px" ng-click="hideshowPost(child)">
-                        <span class="col-12">{{child.body}}</span>
+                        <div class="row">
+                        <div class="col-xs-2 downvote"><vote></vote></div>
+                        <div class="col-xs-10" style="padding-left: 10px">{{child.body}}</div>
+                        <div>
                     </li>
                 </div>
                 <ul focus-on-show class="list-group" style="padding-left: 15px; margin-bottom: 0px;" ng-show="detRep(child)">
@@ -68,8 +73,8 @@
                     <li class="list-group-item" style="padding-right: 0px">
                         <span class="col-12">
                             <textarea class="reply" ng-model="reply.body" placeholder="Reply Here"></textarea>
-                            <button ng-click="submitReply()">Submit</button>
-                            <button ng-click="formReply(child)">Cancel</button>
+                            <button ng-click="submitReply()"><i class="fa fa-paper-plane"></i></button>
+                            <button ng-click="formReply(child)"><i class="fa fa-times"></i></button>
                         </span>
                     </li>
                 </ul>
@@ -89,7 +94,10 @@
         </li>
         <!-- post content -->
         <li class="list-group-item" style="padding-right: 0px">
-            <span class="col-12">{{child.body}}</span>
+            <div class="row">
+            <div class="col-xs-2 downvote"><vote></vote></div>
+            <div class="col-xs-10" style="padding-left: 10px">{{child.body}}</div>
+            <div>
         </li>
         <!-- post reply -->
         <ul focus-on-show class="list-group" style="padding-left: 15px; margin-bottom: 0px;" ng-show="detRep(child)">
