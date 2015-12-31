@@ -64,37 +64,26 @@ router.put('/:id', ensureAuthenticated, function(req, res, next) {
 
     function removeVote(commentId, userId, direction) {
         return Comment.findOne({_id:commentId}).then(function(comment) {
-        	console.log('comment ',comment)
             if (direction === "up") comment.upvotes.splice(comment.upvotes.indexOf(userId), 1)
             if (direction === "down") comment.downvotes.splice(comment.upvotes.indexOf(userId), 1)
-            return comment.save()
+            return comment.save();
         })
     }
 
     function addVote(commentId, userId, direction) {
         return Comment.findOne({_id:commentId}).then(function(comment) {
-        	console.log('comment ',comment)
-
             if (direction === "up") comment.upvotes.push(userId)
             if (direction === "down") comment.downvotes.push(userId)
-            return comment.save()
+            return comment.save();
         })
     }
 
-    console.log('body from vote ', req.body)
-
-    // Comment.findOne(req.params.id).exec().then(function (comment){
-    // 	console.log(comment)
-    // 	if (req.body.voteconfig.rem) removeVote(comment)
-    // }).then(null, next)
     if (req.body.voteconfig.rem) {
         removeVote(req.params.id, req.body.username, req.body.voteconfig.rem).then(function(savedDoc) {
-            console.log('wow rem', savedDoc)
         })
     }
     if (req.body.voteconfig.add) {
         addVote(req.params.id, req.body.username, req.body.voteconfig.add).then(function(savedDoc) {
-            console.log('wow add', savedDoc)
         })
     }
 })

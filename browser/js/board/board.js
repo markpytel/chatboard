@@ -55,8 +55,7 @@ app.controller('BoardController', function($state, $scope, comments, BoardFactor
     $scope.displayed;
     $scope.replying = $scope.reply.parent;
     $scope.somerep = [];
-
-    console.log('scope votes', $scope.votes)
+    $scope.newpost = false;
 
     // Socket Listener Event
 
@@ -67,31 +66,36 @@ app.controller('BoardController', function($state, $scope, comments, BoardFactor
 
     // Event listeners
 
-    // window.onbeforeunload = function () {
-    //     if($scope.replying){
-    //         Socket.emit('someoneReplying', {
-    //             childId: $scope.replying,
-    //             username: $scope.user.username
-    //         })
-    //     }
-    // }
+    window.onbeforeunload = function () {
+        if($scope.replying){
+            Socket.emit('someoneReplying', {
+                childId: $scope.replying,
+                username: $scope.user.username,
+                unload: 'onbeforeunload'
+            })
+        }
+    }
 
-    // $scope.$on('$stateChangeStart', function () {
-    //     if($scope.replying){
-    //         Socket.emit('someoneReplying', {
-    //             childId: $scope.replying,
-    //             username: $scope.user.username
-    //         })
-    //     }
-    // })
+    $scope.$on('$stateChangeStart', function () {
+        if($scope.newpost) return;
+        if($scope.replying){
+            Socket.emit('someoneReplying', {
+                childId: $scope.replying,
+                username: $scope.user.username,
+                unload: 'statechangestart'
+            })
+        }
+    })
 
     Socket.on('init', function (event){
-        console.log('received init event ', event.somerep)
+        // console.log('CLIENT received init event ', event.somerep)
         $scope.somerep = event.somerep
         $scope.$apply();
     })
 
     Socket.on('newPost', function() {
+        // console.log('CLIENT received newPost event ', $scope.somerep)
+        $scope.newpost = true;
         $state.transitionTo($state.current, {
             savedReply: $scope.reply
         }, {
@@ -99,57 +103,22 @@ app.controller('BoardController', function($state, $scope, comments, BoardFactor
             inherit: false,
             notify: true
         });
-        $.notify("I'm over here", 'info');
-        // console.log('after state transition')
-        // console.log('saved post id ', $scope.reply)
-        // if($scope.reply.parent) {
-        //     console.log('only if post id above is something')
-        //     console.log('before before apply ',$scope.replying)
-        //     $scope.replying = $scope.reply.parent
-        //     console.log('before apply ', $scope.replying)
-        //     $scope.$apply();
-        // }
     });
 
-    // Socket.on('someoneReplying', function(event) {
-    //     // console.log('currep in socket ', $scope.currep)
-    //     // console.log('event is: ', event.childId)
-    //     // console.log(event.username, ' is replying to something')
-    //     console.log('magic element ', event.prevcId)
-    //     if (event.prevcId) {
-    //         var cid = $scope.somerep.indexOf(event.prevcId + "" + event.username);
-    //         if (cid !== -1) $scope.somerep.splice(cid, 1);
-    //     }
-    //     var eid = $scope.somerep.indexOf(event.childId + "" + event.username)
-    //     if (eid !== -1) $scope.somerep.splice(eid, 1);
-    //     else $scope.somerep.push(event.childId + "" + event.username)
-
-    //     // console.log('array of replies ', $scope.somerep)
-    //     // console.log($scope.detSomeRep(event.childId))
-    //     // console.log('before')
-    //     $scope.$apply();
-    //     // console.log('after')
-    // })
-
     Socket.on('someoneReplying', function (event) {
-        console.log('event in somerep', event)
+        // console.log('CLIENT received a someoneReplying event ', event.somerep)
         $scope.somerep = event.somerep
         $scope.$apply();
     })
 
     Socket.on('vote', function (event) {
-        // console.log('i got a vote event')
-        // console.log('child ', event.id)
-        // console.log('change ', event.change)
-        // console.log('before ', $scope.votes[event.id])
         $scope.votes[event.id] += event.change
-        console.log('after ', $scope.votes[event.id])
         $scope.$apply();
 
     })
 
-    // Socket.emit('init')
-    console.log('scope.somerep ', $scope.somerep)
+    Socket.emit('init', {user: $scope.user.username})
+    // console.log('CLIENT emitted init event somerep on client: ', $scope.somerep)
 
     // Visibility
 
@@ -164,26 +133,24 @@ app.controller('BoardController', function($state, $scope, comments, BoardFactor
         return child._id === $scope.replying;
     };
     $scope.hideshowReply = function(child) {
-        if ($scope.replying === child._id) $scope.replying = null;
+        if ($scope.replying === child._id) {
+            $scope.replying = null;
+            $scope.reply = {};
+        }
         else {
             $scope.erasenot = $scope.replying;
             $scope.replying = child._id;
+            $scope.reply.parent = child._id;
+            $scope.reply.author = $scope.user._id;
+            $scope.reply.body = null;
         }
     };
     $scope.detSomeRep = function(child) {
-        // console.log('during')
-        // // console.log('IMPORTANT',child+""+work)
-        // console.log($scope.somerep, child + "" + work)
-        // console.log($scope.somerep.indexOf(child+""+work))
-        // console.log('inside function ', $scope.somerep.indexOf(child+""+work) !== -1)
-        // 567f5f4fa3eb1600292e6307
-        // 123456789012345678901234
         var answer = false;
         $scope.somerep.forEach(function(rep) {
             if (rep.slice(0, 24) === child && rep.slice(24) !== $scope.user.username) answer = true;
         })
         return answer;
-        // return $scope.somerep.indexOf(child+""+work) === -1 ? false : true;
     }
 
     // Generate Comment Tree
@@ -210,14 +177,11 @@ app.controller('BoardController', function($state, $scope, comments, BoardFactor
     // Reply Functions
 
     $scope.formReply = function(child) {
-        // console.log('child local ', child)
 
         if (child.parent === null) $scope.hideshowPost(child)
         $scope.hideshowReply(child);
 
-        $scope.reply.parent = child._id;
-        $scope.reply.author = $scope.user._id;
-
+        // console.log('CLIENT before emitting someoneReplying event: ', $scope.somerep)
         Socket.emit('someoneReplying', {
             childId: child._id,
             username: $scope.user.username,
@@ -228,10 +192,18 @@ app.controller('BoardController', function($state, $scope, comments, BoardFactor
     $scope.submitReply = function() {
         var reply = $scope.reply;
         reply.upvotes = [user._id];
-        console.log('Reply inside submit: Reply ', reply);
+
+        console.log('reply before sent ', $scope.reply)
         BoardFactory.postNewComment(reply).then(function(newReply) {
-            console.log('Inside then from PNC ', newReply);
+            // console.log('CLIENT somerep before emit newPost event ', $scope.somerep)
+            Socket.emit('someoneReplying', {
+                childId: $scope.replying,
+                username: $scope.user.username
+            })
             Socket.emit('newPost');
+            // console.log('CLIENT somerep after emit newPost event ', $scope.somerep)
+            // console.log('CLIENT somerep before transition after submit reply ', $scope.somerep)
+            $scope.newpost = true;
             $state.transitionTo($state.current, {
                 savedReply: {}
             }, {
@@ -239,7 +211,7 @@ app.controller('BoardController', function($state, $scope, comments, BoardFactor
                 inherit: false,
                 notify: true
             });
-
+            // console.log('CLIENT somerep after transition after submit reply ', $scope.somerep)
         });
     };
 
