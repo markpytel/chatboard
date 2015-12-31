@@ -49,6 +49,11 @@ module.exports = function (server) {
             socket.broadcast.emit('someoneReplying', {somerep: somerep})
         })
 
+        socket.on('pm', function(){
+            socket.broadcast.emit('pm');
+            socket.emit('pm');
+        })
+
 
     });
     
