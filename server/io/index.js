@@ -22,6 +22,7 @@ module.exports = function (server) {
         // },150)
 
         socket.on('init', function () {
+            // console.log('somerep on server init', somerep)
             socket.emit('init', {somerep: somerep})
         })
 
@@ -44,6 +45,7 @@ module.exports = function (server) {
         //     socket.broadcast.emit('someoneReplying', event)
         // })
         socket.on('someoneReplying', function(event){
+            console.log('somerep ', somerep)
             console.log('someone is replying');
             console.log('event ', event);
             if (event.prevcId) {

@@ -67,26 +67,26 @@ app.controller('BoardController', function($state, $scope, comments, BoardFactor
 
     // Event listeners
 
-    window.onbeforeunload = function () {
-        if($scope.replying){
-            Socket.emit('someoneReplying', {
-                childId: $scope.replying,
-                username: $scope.user.username
-            })
-        }
-    }
+    // window.onbeforeunload = function () {
+    //     if($scope.replying){
+    //         Socket.emit('someoneReplying', {
+    //             childId: $scope.replying,
+    //             username: $scope.user.username
+    //         })
+    //     }
+    // }
 
-    $scope.$on('$stateChangeStart', function () {
-        if($scope.replying){
-            Socket.emit('someoneReplying', {
-                childId: $scope.replying,
-                username: $scope.user.username
-            })
-        }
-    })
+    // $scope.$on('$stateChangeStart', function () {
+    //     if($scope.replying){
+    //         Socket.emit('someoneReplying', {
+    //             childId: $scope.replying,
+    //             username: $scope.user.username
+    //         })
+    //     }
+    // })
 
     Socket.on('init', function (event){
-        console.log('received init event')
+        console.log('received init event ', event.somerep)
         $scope.somerep = event.somerep
         $scope.$apply();
     })
@@ -148,7 +148,8 @@ app.controller('BoardController', function($state, $scope, comments, BoardFactor
 
     })
 
-    Socket.emit('init')
+    // Socket.emit('init')
+    console.log('scope.somerep ', $scope.somerep)
 
     // Visibility
 
@@ -179,7 +180,7 @@ app.controller('BoardController', function($state, $scope, comments, BoardFactor
         // 123456789012345678901234
         var answer = false;
         $scope.somerep.forEach(function(rep) {
-            if (rep.slice(0, 24) === child) answer = true;
+            if (rep.slice(0, 24) === child && rep.slice(24) !== $scope.user.username) answer = true;
         })
         return answer;
         // return $scope.somerep.indexOf(child+""+work) === -1 ? false : true;
@@ -209,7 +210,7 @@ app.controller('BoardController', function($state, $scope, comments, BoardFactor
     // Reply Functions
 
     $scope.formReply = function(child) {
-        console.log('child local ', child)
+        // console.log('child local ', child)
 
         if (child.parent === null) $scope.hideshowPost(child)
         $scope.hideshowReply(child);
