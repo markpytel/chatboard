@@ -194,7 +194,7 @@ app.controller('BoardController', function($state, $scope, comments, BoardFactor
         for (var i = 0; i < comments.length; i++) {
             node = comments[i];
             node.children = [];
-            $scope.votes[node._id] = node.upvotes.length - node.downvotes.length
+            $scope.votes[node._id] = node.upvotes.length - node.downvotes.length;
             map[node._id] = i;
             if (node.parent) {
                 comments[map[node.parent]].children.push(node);
@@ -226,6 +226,7 @@ app.controller('BoardController', function($state, $scope, comments, BoardFactor
 
     $scope.submitReply = function() {
         var reply = $scope.reply;
+        reply.upvotes = [user._id];
         console.log('Reply inside submit: Reply ', reply);
         BoardFactory.postNewComment(reply).then(function(newReply) {
             console.log('Inside then from PNC ', newReply);

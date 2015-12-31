@@ -1,4 +1,6 @@
 app.factory('BoardFactory', function ($http) {
+
+	var offVotes = {}
 	
 	function getAllComments() {
 		return $http.get('/api/comments').then(function (response) {
@@ -32,12 +34,19 @@ app.factory('BoardFactory', function ($http) {
 		})
 	}
 
+	function vote(childId, username, voteconfig) {
+		return $http.put('/api/comments/'+childId, {username: username, voteconfig: voteconfig}).then(function (response){
+			return response.data
+		})
+	}
+
 
 	return {
 		getAllComments: getAllComments,
 		getNestedComments: getNestedComments,
 		getRootComments: getRootComments,
 		postNewComment: postNewComment,
-		getUsernames: getUsernames
+		getUsernames: getUsernames,
+		vote: vote
 	};
 });

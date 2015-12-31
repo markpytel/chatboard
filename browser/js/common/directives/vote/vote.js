@@ -1,29 +1,17 @@
-app.directive('vote', function (Socket) {
+app.directive('vote', function (Socket, BoardFactory) {
 	return {
 		restrict: 'E',
 		templateUrl: 'js/common/directives/vote/vote.html',
 		link: function(scope,elem,attrs) {
 
-			// console.log('user in directive ', scope.user)
-			// console.log('scope.child', scope.child)
-			// console.log('element ', elem)
-			console.log('socket ', Socket)
-
-			console.log('scope.votes', scope.votes[scope.child._id])
-
 			scope.up = false;
 			scope.down = false;
-			// console.log(scope.child.upvotes);
-			// console.log(scope.user._id);
-
 
 			if (scope.child.upvotes && (scope.child.upvotes.indexOf(scope.user._id) !== -1)) {
-				// console.log('user upvoted this ', scope.child)
 				scope.up = true;
 			}
 
 			if (scope.child.downvotes && (scope.child.downvotes.indexOf(scope.user._id) !== -1)) {
-				// console.log('user downvoted this ', scope.child)
 				scope.down = true;
 			}
 
@@ -33,6 +21,10 @@ app.directive('vote', function (Socket) {
 						scope.votes[scope.child._id] -= 1;
 						scope.up = false;
 						Socket.emit('vote', {id: scope.child._id, change: -1})
+
+						BoardFactory.vote(scope.child._id, scope.user._id, {rem: 'up'}).then(function(newVote){
+							console.log('response from server for vote ', newVote)
+						})
 						return;
 					}
 					if (scope.down === true) {
@@ -40,11 +32,15 @@ app.directive('vote', function (Socket) {
 						scope.down = false;
 						scope.up = true;
 						Socket.emit('vote', {id: scope.child._id, change: 2})
+
+						BoardFactory.vote(scope.child._id, scope.user._id, {rem: 'down', add: 'up'})
 						return;
 					}
 					Socket.emit('vote', {id: scope.child._id, change: 1})
 					scope.votes[scope.child._id] += 1;
 					scope.up = true;
+
+					BoardFactory.vote(scope.child._id, scope.user._id, {add: 'up'})
 
 				}
 				if (direction === 'down') {
@@ -53,6 +49,8 @@ app.directive('vote', function (Socket) {
 						scope.votes[scope.child._id] += 1;
 						scope.down = false;
 						Socket.emit('vote', {id: scope.child._id, change: 1})
+
+						BoardFactory.vote(scope.child._id, scope.user._id, {rem: 'down'})
 						return;
 					}
 					if (scope.up === true) {
@@ -60,11 +58,16 @@ app.directive('vote', function (Socket) {
 						scope.up = false;
 						scope.down = true;
 						Socket.emit('vote', {id: scope.child._id, change: -2})
+
+						BoardFactory.vote(scope.child._id, scope.user._id, {rem: 'up', add: 'down'})
 						return;
 					}
 					Socket.emit('vote', {id: scope.child._id, change: -1})
 					scope.votes[scope.child._id] -= 1;
 					scope.down = true;
+
+					BoardFactory.vote(scope.child._id, scope.user._id, {add: 'down'})
+
 				}
 			}
 
