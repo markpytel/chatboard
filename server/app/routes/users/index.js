@@ -26,7 +26,7 @@ var ensureAuthenticated = function (req, res, next) {
 // });
 
 router.get('/', ensureAuthenticated, function (req, res, next) {
-	console.log('Inside route')
+	// console.log('Inside route')
 	PM.find().populate('author').exec()
 	.then(function(pms){
 		console.log('Inside query')

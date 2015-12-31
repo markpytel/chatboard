@@ -27,7 +27,7 @@ var ensureAuthenticated = function (req, res, next) {
 // });
 
 router.get('/', ensureAuthenticated, function (req, res, next) {
-	console.log('Inside route')
+	// console.log('Inside route')
 	PM.find().populate('author').exec()
 	.then(function(pms){
 		console.log('Inside query')
@@ -38,7 +38,7 @@ router.get('/', ensureAuthenticated, function (req, res, next) {
 
 router.get('/sent', ensureAuthenticated, function (req, res, next) {
 	// Find only pms sent by you or sent to you
-	console.log('user inside route for pms: ', req.user)
+	// console.log('user inside route for pms: ', req.user)
 	PM.find({author: req.user._id}).populate('pmto').exec()
 	.then(function(pms){
 		res.status(200).json(pms);
@@ -47,7 +47,7 @@ router.get('/sent', ensureAuthenticated, function (req, res, next) {
 
 router.get('/rec', ensureAuthenticated, function (req, res, next) {
 	// Find only pms sent by you or sent to you
-	console.log('user inside route for pms: ', req.user)
+	// console.log('user inside route for pms: ', req.user)
 	PM.find({pmto: req.user._id}).populate('author').exec()
 	.then(function(pms){
 		res.status(200).json(pms);

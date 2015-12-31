@@ -1,2 +1,26 @@
 @import "fullstack-logo";
 @import "navbar";
+.downvote {
+    margin-top: -8px;
+    margin-bottom: -10px;
+    padding-left: 8px;
+    padding-right: 0px;
+    width: 24px;
+}
+
+.w20 {
+    width: 20px;
+}
+
+.up {
+    color: SteelBlue;
+}
+
+.down {
+    color: Crimson;
+}
+
+.centervote {
+    text-align: center;
+    display: table-cell;
+}

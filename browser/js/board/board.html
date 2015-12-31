@@ -43,21 +43,29 @@
     <script type="text/ng-template" id="commentTree">
         <ul class="list-group" ng-if="child.children" style="padding-left: 5px; margin-bottom: 0px">
             <div ng-repeat="child in child.children" style="border-left: solid Gainsboro 1px">
+                <!-- Snippet -->
                 <div ng-click="hideshowPost(child)" ng-hide="determine(child)">
                     <li style="padding-right: 0px; list-style-type: none">
-                        <span class="col-10" style="margin-left: 5px">{{child.body}}</span>
+                        <span class="col-10" style="margin-left: 5px">{{votes[child._id]}} {{child.body}}</span>
                         <span class="col-2">{{child.author.username}}</span>
                     </li>
                 </div>
+                <!-- Post -->
                 <div ng-show="determine(child)">
+                    <!-- post header -->
                     <li class="list-group-item" style="padding: 0px 15px; background-color:Gainsboro">
                         <span class="col-2">{{child.author.username}}</span>
-                        <span class="col-2 pull-right" ng-click="formReply(child)">Reply</span>
+                        <span class="col-2 pull-right" ng-click="formReply(child)"><i class="fa fa-reply"></i></span>
                     </li>
-                    <li class="list-group-item" style="padding-right: 0px" ng-click="hideshowPost(child)">
-                        <span class="col-12">{{child.body}}</span>
+                    <!-- post content -->
+                    <li class="list-group-item" style="padding-right: 0px">
+                        <div class="row">
+                            <div class="col-xs-2 downvote"><vote></vote></div>
+                            <div class="col-xs-10 postcontent" ng-click="hideshowPost(child)">{{child.body}}</div>
+                        <div>
                     </li>
                 </div>
+                <!-- Reply -->
                 <ul focus-on-show class="list-group" style="padding-left: 15px; margin-bottom: 0px;" ng-show="detRep(child)">
                     <!-- reply header -->
                     <li class="list-group-item" style="padding: 0px 15px; background-color:Gainsboro;">
@@ -68,12 +76,13 @@
                     <li class="list-group-item" style="padding-right: 0px">
                         <span class="col-12">
                             <textarea class="reply" ng-model="reply.body" placeholder="Reply Here"></textarea>
-                            <button ng-click="submitReply()">Submit</button>
-                            <button ng-click="formReply(child)">Cancel</button>
+                            <button ng-click="submitReply()"><i class="fa fa-paper-plane"></i></button>
+                            <button ng-click="formReply(child)"><i class="fa fa-times"></i></button>
                         </span>
                     </li>
                 </ul>
-                <li class="list-group-item" style="padding: 0px 15px; background-color:LightSteelBlue" ng-show="detSomeRep(child._id, currep)">
+                <!-- someone replying -->
+                <li class="list-group-item" style="padding: 0px 15px; background-color:LightSteelBlue" ng-show="detSomeRep(child._id)">
                     <span class="col-12">Someone is replying to this post</span>
                 </li>
                 <div style="padding-left: 10px" ng-include="'commentTree'"></div>
@@ -89,7 +98,10 @@
         </li>
         <!-- post content -->
         <li class="list-group-item" style="padding-right: 0px">
-            <span class="col-12">{{child.body}}</span>
+            <div class="row">
+                <div class="col-xs-2 downvote"><vote></vote></div>
+                <div class="col-xs-10" style="padding-left: 10px">{{child.body}}</div>
+            <div>
         </li>
         <!-- post reply -->
         <ul focus-on-show class="list-group" style="padding-left: 15px; margin-bottom: 0px;" ng-show="detRep(child)">
@@ -108,7 +120,7 @@
             </li>
         </ul>
         <!-- someone replying -->
-        <li class="list-group-item" style="padding: 0px 15px; background-color:LightSteelBlue" ng-show="detSomeRep(child._id, currep)">
+        <li class="list-group-item" style="padding: 0px 15px; background-color:LightSteelBlue" ng-show="detSomeRep(child._id)">
             <span class="col-12">Someone is replying to this post</span>
         </li>
         <!-- nested replies -->
