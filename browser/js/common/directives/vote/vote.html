@@ -1,6 +1,6 @@
 <!-- {{child.upvotes.length - child.downvotes.length}} -->
 
 
-<span class="glyphicon glyphicon-menu-up w20" aria-hidden="true"></span>
-<span class="w20">{{total}}</span>
-<span class="glyphicon glyphicon-menu-down w20" aria-hidden="true"></span>
+<span ng-click="vote('up')" ng-class="{'up': up}" class="glyphicon glyphicon-menu-up w20" aria-hidden="true"></span>
+<span class="w20 centervote">{{votes[child._id]}}</span>
+<span ng-click="vote('down')" ng-class="{'down': down}" class="glyphicon glyphicon-menu-down w20" aria-hidden="true"></span>

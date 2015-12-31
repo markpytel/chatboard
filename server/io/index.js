@@ -15,14 +15,29 @@ module.exports = function (server) {
 
         console.log('A new client has connected! replies in progress ', somerep);
         console.log(socket.id);
-        setTimeout(function(){
-            socket.emit('message', {somerep: somerep})
-        },150)
+
+        // on connection send 
+        // setTimeout(function(){
+        //     socket.emit('init', {somerep: somerep})
+        // },150)
+
+        socket.on('init', function () {
+            socket.emit('init', {somerep: somerep})
+        })
+
+        // socket.emit('init', {somerep: somerep})
+
         // socket.broadcast.emit('message', 'A new socket has connected')
         socket.on('newPost', function(event){
         	console.log('a new post has been made')
         	socket.broadcast.emit('newPost');
         })
+
+        socket.on('vote', function(event){
+            socket.broadcast.emit('vote', event)
+        })
+
+
         // socket.on('someoneReplying', function(event){
         //     console.log('someone is replying');
         //     console.log('event ', event);

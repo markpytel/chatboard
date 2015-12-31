@@ -29,8 +29,6 @@ app.config(function($stateProvider) {
             },
             recpms: function(PMFactory) {
                 return PMFactory.getRecPMS();
-            },
-            somerep: function(Socket) {
             }
         },
         data: {
@@ -44,6 +42,7 @@ app.controller('BoardController', function($state, $scope, comments, BoardFactor
 
     // Scope Variables
 
+    $scope.votes = {};
     $scope.comments = comments;
     $scope.children = [];
     $scope.children = makeTree();
@@ -57,49 +56,14 @@ app.controller('BoardController', function($state, $scope, comments, BoardFactor
     $scope.replying = $scope.reply.parent;
     $scope.somerep = [];
 
-    // Remove listeners from previous visits
+    console.log('scope votes', $scope.votes)
+
+    // Socket Listener Event
 
     Socket.removeListener('newPost');
     Socket.removeListener('someoneReplying');
-
-    // console.logs
-
-    console.log(users);
-
-    // Visibility
-
-    $scope.determine = function(child) {
-        return child._id === $scope.displayed;
-    };
-    $scope.hideshowPost = function(child) {
-        if ($scope.displayed === child._id) $scope.displayed = null;
-        else $scope.displayed = child._id;
-    };
-    $scope.detRep = function(child) {
-        return child._id === $scope.replying;
-    };
-    $scope.hideshowReply = function(child) {
-        if ($scope.replying === child._id) $scope.replying = null;
-        else {
-            $scope.erasenot = $scope.replying;
-            $scope.replying = child._id;
-        }
-    };
-    $scope.detSomeRep = function(child) {
-        // console.log('during')
-        // // console.log('IMPORTANT',child+""+work)
-        // console.log($scope.somerep, child + "" + work)
-        // console.log($scope.somerep.indexOf(child+""+work))
-        // console.log('inside function ', $scope.somerep.indexOf(child+""+work) !== -1)
-        // 567f5f4fa3eb1600292e6307
-        // 123456789012345678901234
-        var answer = false;
-        $scope.somerep.forEach(function(rep) {
-            if (rep.slice(0, 24) === child) answer = true;
-        })
-        return answer;
-        // return $scope.somerep.indexOf(child+""+work) === -1 ? false : true;
-    }
+    Socket.removeListener('init');
+    Socket.removeListener('vote');
 
     // Event listeners
 
@@ -119,6 +83,12 @@ app.controller('BoardController', function($state, $scope, comments, BoardFactor
                 username: $scope.user.username
             })
         }
+    })
+
+    Socket.on('init', function (event){
+        console.log('received init event')
+        $scope.somerep = event.somerep
+        $scope.$apply();
     })
 
     Socket.on('newPost', function() {
@@ -167,13 +137,53 @@ app.controller('BoardController', function($state, $scope, comments, BoardFactor
         $scope.$apply();
     })
 
-    Socket.on('message', function (event) {
-        console.log('hello from socket you get your scope data this way')
-        $scope.somerep = event.somerep;
-        console.log('people replying ', event)
+    Socket.on('vote', function (event) {
+        // console.log('i got a vote event')
+        // console.log('child ', event.id)
+        // console.log('change ', event.change)
+        // console.log('before ', $scope.votes[event.id])
+        $scope.votes[event.id] += event.change
+        console.log('after ', $scope.votes[event.id])
         $scope.$apply();
+
     })
 
+    Socket.emit('init')
+
+    // Visibility
+
+    $scope.determine = function(child) {
+        return child._id === $scope.displayed;
+    };
+    $scope.hideshowPost = function(child) {
+        if ($scope.displayed === child._id) $scope.displayed = null;
+        else $scope.displayed = child._id;
+    };
+    $scope.detRep = function(child) {
+        return child._id === $scope.replying;
+    };
+    $scope.hideshowReply = function(child) {
+        if ($scope.replying === child._id) $scope.replying = null;
+        else {
+            $scope.erasenot = $scope.replying;
+            $scope.replying = child._id;
+        }
+    };
+    $scope.detSomeRep = function(child) {
+        // console.log('during')
+        // // console.log('IMPORTANT',child+""+work)
+        // console.log($scope.somerep, child + "" + work)
+        // console.log($scope.somerep.indexOf(child+""+work))
+        // console.log('inside function ', $scope.somerep.indexOf(child+""+work) !== -1)
+        // 567f5f4fa3eb1600292e6307
+        // 123456789012345678901234
+        var answer = false;
+        $scope.somerep.forEach(function(rep) {
+            if (rep.slice(0, 24) === child) answer = true;
+        })
+        return answer;
+        // return $scope.somerep.indexOf(child+""+work) === -1 ? false : true;
+    }
 
     // Generate Comment Tree
 
@@ -184,6 +194,7 @@ app.controller('BoardController', function($state, $scope, comments, BoardFactor
         for (var i = 0; i < comments.length; i++) {
             node = comments[i];
             node.children = [];
+            $scope.votes[node._id] = node.upvotes.length - node.downvotes.length
             map[node._id] = i;
             if (node.parent) {
                 comments[map[node.parent]].children.push(node);

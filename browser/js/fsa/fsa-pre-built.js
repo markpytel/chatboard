@@ -9,7 +9,8 @@
 
     app.factory('Socket', function () {
         if (!window.io) throw new Error('socket.io not found!');
-        return window.io(window.location.origin);
+        var Socket = window.io(window.location.origin);
+        return Socket;
     });
 
     // AUTH_EVENTS is used throughout our app to
@@ -34,7 +35,7 @@
         return {
             responseError: function (response) {
                 $rootScope.$broadcast(statusDict[response.status], response);
-                return $q.reject(response)
+                return $q.reject(response);
             }
         };
     });
