@@ -5,7 +5,8 @@ app.config(function($stateProvider) {
         url: '/board',
         params: {
             savedReply: null,
-            modal: null
+            modal: null,
+            page: null
         },
         controller: 'BoardController',
         templateUrl: 'js/board/board.html',
@@ -34,6 +35,11 @@ app.config(function($stateProvider) {
             modal: function($stateParams) {
                 if (!$stateParams.modal) return false;
                 else return true;
+            },
+            page: function($stateParams) {
+                console.log('stateparams in page resolve ', $stateParams)
+                if (!$stateParams.page) return 0;
+                else return $stateParams.page;
             }
         },
         data: {
@@ -43,14 +49,19 @@ app.config(function($stateProvider) {
 
 });
 
-app.controller('BoardController', function($rootScope, $state, $scope, comments, BoardFactory, Socket, reply, $stateParams, user, users, sentpms, recpms, modal) {
+app.controller('BoardController', function($rootScope, $state, $scope, comments, BoardFactory, Socket, reply, $stateParams, user, users, sentpms, recpms, modal, page) {
 
     // Scope Variables
 
+    $scope.page = page
+    console.log('page ', $scope.page)
+    $scope.arrOfPages = [];
     $scope.votes = {};
     $scope.comments = comments;
     $scope.children = [];
     $scope.children = makeTree();
+    makeArrayOfPages();
+    $scope.children = $scope.arrOfPages[$scope.page]
     $scope.reply = reply;
     $scope.user = user;
     $scope.users = users;
@@ -62,7 +73,6 @@ app.controller('BoardController', function($rootScope, $state, $scope, comments,
     $scope.somerep = [];
     $scope.newpost = false;
     $scope.modal = modal;
-    $scope.thread = false;
 
     // Socket Listener Event
 
@@ -76,8 +86,6 @@ app.controller('BoardController', function($rootScope, $state, $scope, comments,
 
     // Event listeners
 
-    // This should be an angular emitter since its communicating client side
-    // only
     if ($scope.modal) {
         console.log('this only happens if you had the window open')
         $rootScope.$emit('newpms', {sentpms: sentpms, recpms: recpms}) 
@@ -113,8 +121,10 @@ app.controller('BoardController', function($rootScope, $state, $scope, comments,
     Socket.on('newPost', function() {
         // console.log('CLIENT received newPost event ', $scope.somerep)
         $scope.newpost = true;
+        console.log('scope page before transition ', $scope.page)
         $state.transitionTo($state.current, {
-            savedReply: $scope.reply
+            savedReply: $scope.reply,
+            page: $scope.page
         }, {
             reload: true,
             inherit: false,
@@ -136,9 +146,12 @@ app.controller('BoardController', function($rootScope, $state, $scope, comments,
 
     Socket.on('pm', function (event) {   
         $scope.newpost = true;
+        console.log('scope page before transition ', $scope.page)
+
         $state.transitionTo($state.current, {
             savedReply: $scope.reply,
-            modal: $scope.modal
+            modal: $scope.modal,
+            page: $scope.page
         }, {
             reload: true,
             inherit: false,
@@ -210,6 +223,25 @@ app.controller('BoardController', function($rootScope, $state, $scope, comments,
             }
         }
         return start;
+    }
+
+    function makeArrayOfPages() {
+        console.log('making pages')
+        var length = Math.ceil($scope.children.length/10)
+        console.log('length')
+        for (var i=1; i<length+1; i++) {
+            console.log('i ', i)
+            $scope.arrOfPages.push($scope.children.slice((i-1)*10,i*10))
+        }
+
+        console.log('arrofpages done ', $scope.arrOfPages)
+
+    }
+
+    $scope.gotoPage = function(index) {
+        console.log('going to page ', index)
+        $scope.page = index;
+        $scope.children=$scope.arrOfPages[index]
     }
 
     // Reply Functions

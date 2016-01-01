@@ -3,6 +3,9 @@
         <modalpm></modalpm>
         <button type="button" class="btn btn-default pull-right" ng-click="formReply({_id: 'new'})">New Thread</button>
     </div>
+    <div>
+        <button ng-repeat="page in arrOfPages" ng-click="gotoPage($index)">Page{{$index+1}}</button>
+    </div>
     <!-- 
     <script type="text/ng-template" id="group-template.html">
         <div class="panel {{panelClass || 'panel-default'}}">
