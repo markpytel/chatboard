@@ -1,12 +1,11 @@
-app.controller('ModalDemoCtrl', function ($scope, $uibModal, $log) {
+app.controller('ModalDemoCtrl', function ($scope, $uibModal, $log, Socket) {
 
   $scope.items = ['item1', 'item2', 'item3'];
-
   $scope.animationsEnabled = true;
 
-  console.log('scope inside modal controller ', $scope)
-
   $scope.open = function (size) {
+
+    $scope.$parent.modal = true;
 
     var modalInstance = $uibModal.open({
       animation: $scope.animationsEnabled,
@@ -36,6 +35,7 @@ app.controller('ModalDemoCtrl', function ($scope, $uibModal, $log) {
     modalInstance.result.then(function (selectedItem) {
       $scope.selected = selectedItem;
     }, function () {
+      $scope.$parent.modal = false;
       $log.info('Modal dismissed at: ' + new Date());
     });
   };
@@ -49,7 +49,7 @@ app.controller('ModalDemoCtrl', function ($scope, $uibModal, $log) {
 // Please note that $modalInstance represents a modal window (instance) dependency.
 // It is not the same as the $uibModal service used above.
 
-app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, items, pms, sentpms, recpms, users, PMFactory) {
+app.controller('ModalInstanceCtrl', function ($rootScope, $scope, $uibModalInstance, items, pms, sentpms, recpms, users, PMFactory, Socket) {
 
   $scope.newPM = {};
   $scope.items = items;
@@ -60,10 +60,16 @@ app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, items, 
   $scope.selected;
   $scope.view='rec';
 
+  $rootScope.$on('newpms', function (event, data) {
+    $scope.sentpms = data.sentpms;
+    $scope.recpms = data.recpms;
+  })
+
+
   $scope.setView = function (view) {
-    console.log('view in setview ', view)
     $scope.view = view;
   }
+
 
   $scope.validUser = function () {
     console.log('selected in valid user' ,$scope.selected)
@@ -71,6 +77,7 @@ app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, items, 
       console.log('valid user')
       PMFactory.postNewPM($scope.newPM).then(function(newPM){
         console.log('response from new pm ', newPM)
+        Socket.emit('pm')
       })
     }
     else {

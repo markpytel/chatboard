@@ -4,7 +4,8 @@ app.config(function($stateProvider) {
     $stateProvider.state('board', {
         url: '/board',
         params: {
-            savedReply: null
+            savedReply: null,
+            modal: null
         },
         controller: 'BoardController',
         templateUrl: 'js/board/board.html',
@@ -29,6 +30,10 @@ app.config(function($stateProvider) {
             },
             recpms: function(PMFactory) {
                 return PMFactory.getRecPMS();
+            },
+            modal: function($stateParams) {
+                if (!$stateParams.modal) return false;
+                else return true;
             }
         },
         data: {
@@ -38,7 +43,7 @@ app.config(function($stateProvider) {
 
 });
 
-app.controller('BoardController', function($state, $scope, comments, BoardFactory, Socket, reply, $stateParams, user, users, sentpms, recpms) {
+app.controller('BoardController', function($rootScope, $state, $scope, comments, BoardFactory, Socket, reply, $stateParams, user, users, sentpms, recpms, modal) {
 
     // Scope Variables
 
@@ -56,6 +61,7 @@ app.controller('BoardController', function($state, $scope, comments, BoardFactor
     $scope.replying = $scope.reply.parent;
     $scope.somerep = [];
     $scope.newpost = false;
+    $scope.modal = modal;
 
     // Socket Listener Event
 
@@ -63,8 +69,18 @@ app.controller('BoardController', function($state, $scope, comments, BoardFactor
     Socket.removeListener('someoneReplying');
     Socket.removeListener('init');
     Socket.removeListener('vote');
+    Socket.removeListener('pm');
+    Socket.removeListener('sentpm');
+    Socket.removeListener('recpm');
 
     // Event listeners
+
+    // This should be an angular emitter since its communicating client side
+    // only
+    if ($scope.modal) {
+        console.log('this only happens if you had the window open')
+        $rootScope.$emit('newpms', {sentpms: sentpms, recpms: recpms}) 
+    }
 
     window.onbeforeunload = function () {
         if($scope.replying){
@@ -115,6 +131,18 @@ app.controller('BoardController', function($state, $scope, comments, BoardFactor
         $scope.votes[event.id] += event.change
         $scope.$apply();
 
+    })
+
+    Socket.on('pm', function (event) {   
+        $scope.newpost = true;
+        $state.transitionTo($state.current, {
+            savedReply: $scope.reply,
+            modal: $scope.modal
+        }, {
+            reload: true,
+            inherit: false,
+            notify: true
+        });
     })
 
     Socket.emit('init', {user: $scope.user.username})
