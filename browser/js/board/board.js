@@ -38,7 +38,7 @@ app.config(function($stateProvider) {
             },
             page: function($stateParams) {
                 console.log('stateparams in page resolve ', $stateParams)
-                if (!$stateParams.page) return 0;
+                if (!$stateParams.page) return 1;
                 else return $stateParams.page;
             }
         },
@@ -53,13 +53,14 @@ app.controller('BoardController', function($rootScope, $state, $scope, comments,
 
     // Scope Variables
 
-    $scope.page = page
+    $scope.page = page;
     console.log('page ', $scope.page)
     $scope.arrOfPages = [];
     $scope.votes = {};
     $scope.comments = comments;
     $scope.children = [];
     $scope.children = makeTree();
+    $scope.numofitems = $scope.children.length
     makeArrayOfPages();
     $scope.children = $scope.arrOfPages[$scope.page]
     $scope.reply = reply;
@@ -73,6 +74,11 @@ app.controller('BoardController', function($rootScope, $state, $scope, comments,
     $scope.somerep = [];
     $scope.newpost = false;
     $scope.modal = modal;
+
+    $scope.maxSize = 5;
+    $scope.bigTotalItems = 140;
+    $scope.bigCurrentPage = 1;
+    $scope.numPages = 10;
 
     // Socket Listener Event
 
@@ -228,6 +234,7 @@ app.controller('BoardController', function($rootScope, $state, $scope, comments,
     function makeArrayOfPages() {
         console.log('making pages')
         var length = Math.ceil($scope.children.length/10)
+        $scope.arrOfPages.push('[]');
         console.log('length')
         for (var i=1; i<length+1; i++) {
             console.log('i ', i)
