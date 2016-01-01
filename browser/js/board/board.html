@@ -1,5 +1,8 @@
 <section id="board">
-    <modalpm></modalpm>
+    <div class="row" style="height:60px">
+        <modalpm></modalpm>
+        <button type="button" class="btn btn-default pull-right" ng-click="formReply({_id: 'new'})">New Thread</button>
+    </div>
     <!-- 
     <script type="text/ng-template" id="group-template.html">
         <div class="panel {{panelClass || 'panel-default'}}">
@@ -39,6 +42,22 @@
         </ul>
     </script>
  -->
+
+    <ul focus-on-show class="list-group" style="margin-bottom: 15px;" ng-show="detRep({_id: 'new'})">
+        <!-- reply header -->
+        <li class="list-group-item" style="padding: 0px 15px; background-color:Gainsboro;">
+            <span class="col-2">{{user.username}}</span>
+            <span class="col-2 pull-right"></span>
+        </li>
+        <!-- reply body -->
+        <li class="list-group-item" style="padding-right: 0px">
+            <span class="col-12">
+                <textarea class="reply" ng-model="reply.body" placeholder="Reply Here"></textarea>
+                <button ng-click="submitReply()"><i class="fa fa-paper-plane"></i></button>
+                <button ng-click="formReply({_id: 'new'})"><i class="fa fa-times"></i></button>
+            </span>
+        </li>
+    </ul>
     <!-- template for nested replies -->
     <script type="text/ng-template" id="commentTree">
         <ul class="list-group" ng-if="child.children" style="padding-left: 5px; margin-bottom: 0px">

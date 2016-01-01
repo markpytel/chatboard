@@ -62,6 +62,7 @@ app.controller('BoardController', function($rootScope, $state, $scope, comments,
     $scope.somerep = [];
     $scope.newpost = false;
     $scope.modal = modal;
+    $scope.thread = false;
 
     // Socket Listener Event
 
@@ -157,10 +158,19 @@ app.controller('BoardController', function($rootScope, $state, $scope, comments,
         if ($scope.displayed === child._id) $scope.displayed = null;
         else $scope.displayed = child._id;
     };
+    $scope.detThr = function() {
+        return $scope.thread
+    }
+    $scope.setThr = function() {
+        $scope.thread = !$scope.thread
+    }
     $scope.detRep = function(child) {
+        // console.log('childid truth ', child._id, $scope.replying)
         return child._id === $scope.replying;
     };
     $scope.hideshowReply = function(child) {
+        $scope.thread = false;
+
         if ($scope.replying === child._id) {
             $scope.replying = null;
             $scope.reply = {};
@@ -218,6 +228,7 @@ app.controller('BoardController', function($rootScope, $state, $scope, comments,
     };
 
     $scope.submitReply = function() {
+        if ($scope.reply.parent === 'new') $scope.reply.parent = null;
         var reply = $scope.reply;
         reply.upvotes = [user._id];
 
