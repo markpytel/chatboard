@@ -1,11 +1,13 @@
 <section id="board">
     <div class="row" style="height:60px">
         <modalpm></modalpm>
-        <button type="button" class="btn btn-default pull-right" ng-click="formReply({_id: 'new'})">New Thread</button>
+        <button type="button" class="btn btn-default pull-right" ng-class="{'bh': detRep({_id: 'new'})}" ng-click="formReply({_id: 'new'})">
+            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+        </button>
     </div>
 
     <div class="text-center">           
-        <uib-pagination total-items="numofitems" ng-model="page" ng-click="gotoPage(page)" max-size="maxSize" class="pagination-sm" boundary-links="true" num-pages="numPages"></uib-pagination>
+        <uib-pagination total-items="numofitems" ng-model="page" ng-click="gotoPage(page)" max-size="maxSize" class="pagination-sm" boundary-links="true" num-pages="numPages" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></uib-pagination>
     </div>
 
 
@@ -57,8 +59,10 @@
             </div>
         </ul>
     </script>
- -->
+-->
 
+
+    <!-- create new thread -->
     <ul focus-on-show class="list-group" style="margin-bottom: 15px;" ng-show="detRep({_id: 'new'})">
         <!-- reply header -->
         <li class="list-group-item" style="padding: 0px 15px; background-color:Gainsboro;">
@@ -66,21 +70,23 @@
             <span class="col-2 pull-right"></span>
         </li>
         <!-- reply body -->
-        <li class="list-group-item" style="padding-right: 0px">
+        <li class="list-group-item rs" style="padding-right: 0px">
             <span class="col-12">
-                <textarea class="reply" ng-model="reply.body" placeholder="Reply Here"></textarea>
+                <textarea class="reply rs" ng-model="reply.body" placeholder="Reply Here"></textarea>
                 <button ng-click="submitReply()"><i class="fa fa-paper-plane"></i></button>
                 <button ng-click="formReply({_id: 'new'})"><i class="fa fa-times"></i></button>
             </span>
         </li>
     </ul>
+
+
     <!-- template for nested replies -->
     <script type="text/ng-template" id="commentTree">
         <ul class="list-group" ng-if="child.children" style="padding-left: 5px; margin-bottom: 0px">
             <div ng-repeat="child in child.children" style="border-left: solid Gainsboro 1px">
                 <!-- Snippet -->
                 <div ng-click="hideshowPost(child)" ng-hide="determine(child)">
-                    <li style="padding-right: 0px; list-style-type: none">
+                    <li class="highlight" style="padding-right: 0px; list-style-type: none">
                         <span class="col-10" style="margin-left: 5px">{{votes[child._id]}} {{child.body}}</span>
                         <span class="col-2">{{child.author.username}}</span>
                     </li>
@@ -108,9 +114,9 @@
                         <span class="col-2 pull-right"></span>
                     </li>
                     <!-- reply body -->
-                    <li class="list-group-item" style="padding-right: 0px">
+                    <li class="list-group-item rs" style="padding-right: 0px">
                         <span class="col-12">
-                            <textarea class="reply" ng-model="reply.body" placeholder="Reply Here"></textarea>
+                            <textarea class="reply rs" ng-model="reply.body" placeholder="Reply Here"></textarea>
                             <button ng-click="submitReply()"><i class="fa fa-paper-plane"></i></button>
                             <button ng-click="formReply(child)"><i class="fa fa-times"></i></button>
                         </span>
@@ -146,9 +152,9 @@
                 <span class="col-2 pull-right"></span>
             </li>
             <!-- reply body -->
-            <li class="list-group-item" style="padding-right: 0px">
+            <li class="list-group-item rs" style="padding-right: 0px">
                 <span class="col-12">
-                    <textarea class="reply" ng-model="reply.body" placeholder="Reply Here"></textarea>
+                    <textarea class="reply rs" ng-model="reply.body" placeholder="Reply Here"></textarea>
                     <button ng-click="submitReply()"><i class="fa fa-paper-plane"></i></button>
                     <button ng-click="formReply(child)"><i class="fa fa-times"></i></button>
                 </span>

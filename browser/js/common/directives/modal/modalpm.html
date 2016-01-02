@@ -13,34 +13,34 @@
         <div class="modal-header">
             <h3 style="text-align:center" class="modal-title">Message Center</h3>
         </div>
-        <div class="col-sm-12" style="background-color:Gainsboro; border: 1px solid grey; padding: 0px 0px">
+        <div class="col-sm-12" style="border: 1px solid #ccc; padding: 0px 0px">
             <div class="btn-group btn-group-justified" role="group" aria-label="...">
                 <div ng-click="setView('rec')" class="btn-group" role="group">
-                    <button type="button" style="background-color:Gainsboro" class="btn btn-default">Inbox</button>
+                    <button type="button" style="background-color:#eee" class="btn btn-default" ng-class="{active:view==='rec', focus:view==='rec'}">Inbox</button>
                 </div>
                 <div ng-click="setView('sent')" class="btn-group" role="group">
-                    <button type="button" style="background-color:Gainsboro" class="btn btn-default">Sent</button>
+                    <button type="button" style="background-color:#eee" class="btn btn-default" ng-class="{active:view==='sent', focus:view==='sent'}">Sent</button>
                 </div>
             </div>
         </div>
-        <div class="modal-body" style="height:300px; overflow-y: scroll">
+        <div class="modal-body" style="height:300px; overflow-y: scroll; background: #f5f5f5;">
             <ul ng-show="view==='sent'" class="list-group">
-                <li class="list-group-item" ng-repeat="pm in sentpms">
+                <li class="list-group-item highlight" ng-repeat="pm in sentpms">
                     <a href="#" ng-click="$event.preventDefault(); selected.item = item">To: {{pm.pmto.username}}: {{pm.body}}</a>
                 </li>
             </ul>
             <ul ng-show="view==='rec'" class="list-group">
-                <li class="list-group-item" ng-repeat="pm in recpms">
+                <li class="list-group-item highlight" ng-repeat="pm in recpms">
                     <a href="#" ng-click="$event.preventDefault(); selected.item = item">From: {{pm.author.username}}: {{pm.body}}</a>
                 </li>
             </ul>
         </div>
         <div style="border-top: solid Gainsboro 1px; height:105px">
-            <li class="list-group-item" style="padding-right: 0px">
-                <textarea class="reply" ng-model="newPM.body" placeholder="Message Here"></textarea>
+            <li class="list-group-item rs" style="padding-right: 0px">
+                <textarea class="reply rs" ng-model="newPM.body" placeholder="Message Here"></textarea>
             </li>
         </div>
-        <div class="modal-footer">
+        <div class="modal-footer" style="background:#f5f5f5">
             <div class="input-group">
                 <span class="input-group-addon" id="sizing-addon2"><i class="fa fa-at"></i></span>
                 <input switch-focus autofocus type="text" class="form-control" placeholder="Username" aria-describedby="sizing-addon2" uib-typeahead="user for user in users | filter:$viewValue" ng-model="newPM.pmto"></input>
@@ -54,6 +54,8 @@
         -->
         </div>
     </script>
-    <button type="button" class="btn btn-default pull-right" ng-click="open()">Private Message</button>
+    <button type="button" class="btn btn-default pull-right" ng-class="{'bh': $parent.modal}" ng-click="open()">
+        <span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>
+    </button>
     <div ng-show="selected">Selection from a modal: {{ selected }}</div>
 </div>

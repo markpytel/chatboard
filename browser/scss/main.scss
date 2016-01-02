@@ -3,7 +3,7 @@
 }
 
 body {
-    background: #fdfdfd;
+    background: #f5f5f5;
 }
 
 @mixin clearfix {
@@ -29,6 +29,12 @@ body {
 .reply:focus {
     outline: none;
 }
+
+.rs {
+    /* background-color: #D9EDF7; */
+    background-color: #E5EFF8;
+}
+
 
 @import 'directives/main';
 @import 'home/main';

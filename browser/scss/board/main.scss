@@ -67,4 +67,53 @@
     min-height: 42px;
   }
 
+  .pagination > .active > a,
+  .pagination > .active > span,
+  .pagination > .active > a:hover,
+  .pagination > .active > span:hover,
+  .pagination > .active > a:focus,
+  .pagination > .active > span:focus {
+      z-index: 2;
+      color: #23527c;
+      background-color: GhostWhite;
+      border-color: #ddd;
+  }
+
+  .pagination > li > a:hover,
+  .pagination > li > span:hover,
+  .pagination > li > a:focus,
+  .pagination > li > span:focus {
+    z-index: 2;
+    color: #23527c;
+    background-color: GhostWhite;
+    border-color: #ddd;
+  }
+
+  button:focus {
+    outline: none;
+  }
+
+  .btn-default:focus {
+    color: #333;
+    background-color: #fff;
+    border-color: #ccc;
+  }
+
+  .btn-default:hover {
+    color: #333;
+    background-color: LightSteelBlue;
+    border-color: #adadad;
+  }
+
+  .rs {
+    /* background-color: #D9EDF7; */
+    background-color: #E5EFF8;
+  }
+
+  .bh {
+    color: #333;
+    background-color: LightSteelBlue !important;
+    border-color: #adadad;
+  }
+
 }
