@@ -2,5 +2,5 @@
 
 
 <span ng-click="vote('up')" ng-class="{'up': up}" class="glyphicon glyphicon-chevron-up w20" aria-hidden="true"></span>
-<span class="w20 centervote" ng-class="{'up': sign(child) === 'positive', 'down': sign(child) === 'negative'}">{{votes[child._id]}}</span>
+<span class="w20 centervote" ng-class="{'up': sign(child) === 'positive', 'down': sign(child) === 'negative'}" ng-click="voteStatus()">{{votes[child._id]}}</span>
 <span ng-click="vote('down')" ng-class="{'down': down}" class="glyphicon glyphicon-chevron-down w20" aria-hidden="true"></span>

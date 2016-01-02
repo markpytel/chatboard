@@ -54,15 +54,16 @@ app.controller('BoardController', function($rootScope, $state, $scope, comments,
     // Scope Variables
 
     $scope.page = page;
-    console.log('page ', $scope.page)
-    $scope.arrOfPages = [];
     $scope.votes = {};
     $scope.comments = comments;
     $scope.children = [];
     $scope.children = makeTree();
     $scope.numofitems = $scope.children.length
-    makeArrayOfPages();
-    $scope.children = $scope.arrOfPages[$scope.page]
+    $scope.children = sortTrees();
+    $scope.arrOfPages = [];
+    $scope.arrOfPages = makeArrayOfPages();
+    $scope.children = $scope.arrOfPages[$scope.page];
+    console.log('posts ', $scope.children)
     $scope.reply = reply;
     $scope.user = user;
     $scope.users = users;
@@ -130,6 +131,7 @@ app.controller('BoardController', function($rootScope, $state, $scope, comments,
         console.log('scope page before transition ', $scope.page)
         $state.transitionTo($state.current, {
             savedReply: $scope.reply,
+            modal: $scope.modal,
             page: $scope.page
         }, {
             reload: true,
@@ -216,10 +218,12 @@ app.controller('BoardController', function($rootScope, $state, $scope, comments,
         else return false;
     }
 
+    // Determine the color for the vote counter
     $scope.sign = function (child) {
         if ($scope.votes[child._id] > 0) return 'positive';
         if ($scope.votes[child._id] < 0) return 'negative'; 
     }
+
 
     // Generate Comment Tree
 
@@ -239,25 +243,81 @@ app.controller('BoardController', function($rootScope, $state, $scope, comments,
                 start.push(node);
             }
         }
+
+        return start;
+    }
+
+    function recSearch(obj) {
+
+        obj.mostRecent = new Date(obj.date).getTime()
+        console.log('initial ',obj.mostRecent)
+
+        function rsh(curObj) {
+            var comp = new Date(curObj.date).getTime()
+            console.log('comp parent ', comp, obj.mostRecent)
+            if (comp > obj.mostRecent) {
+                obj.mostRecent = comp;
+                console.log('new most recent post detected ', curObj)
+            }
+
+            if (curObj.children.length === 0) {
+                return;
+            }
+            else {
+                for (var i=0; i<curObj.children.length; i++) {
+                    rsh(curObj.children[i]);
+                }
+            }
+        }
+
+        console.log('obj ', obj)
+        rsh(obj)
+        console.log('obj after sorting ', obj)
+
+        return obj
+
+    }
+
+    function sortTrees() {
+
+        var start = $scope.children.slice();
+
+        for (var i=0; i<start.length; i++) {
+            start[i] = recSearch(start[i]);
+        }
+
+
+        // console.log('start inside maketree ', start)
+
+        // console.log(start[0].date)
+        // console.log(new Date(start[0].date).getTime())
+
+        // start = start.sort(function (b,a) {
+        //     return new Date(a.date).getTime() - new Date(b.date).getTime();
+        // })
+
+        start = start.sort(function (a,b) {
+            return b.mostRecent - a.mostRecent;
+        })
+
         return start;
     }
 
     function makeArrayOfPages() {
-        console.log('making pages')
+
+        var pages = [];
+
         var length = Math.ceil($scope.children.length/10)
-        $scope.arrOfPages.push('[]');
-        console.log('length')
+        pages.push([]);
+
         for (var i=1; i<length+1; i++) {
-            console.log('i ', i)
-            $scope.arrOfPages.push($scope.children.slice((i-1)*10,i*10))
+            pages.push($scope.children.slice((i-1)*10,i*10))
         }
 
-        console.log('arrofpages done ', $scope.arrOfPages)
-
+        return pages;
     }
 
     $scope.gotoPage = function(index) {
-        console.log('going to page ', index)
         $scope.page = index;
         $scope.children=$scope.arrOfPages[index]
     }

@@ -72,6 +72,12 @@ app.directive('vote', function (Socket, BoardFactory) {
 				}
 			}
 
+			scope.voteStatus = function () {
+				console.log('child upvotes ', scope.child.upvotes)
+				console.log('child downvotes ', scope.child.downvotes)
+				console.log('Up, down ', scope.up, scope.down)
+			}
+
 			// scope.total = scope.child.upvotes.length - scope.child.downvotes.length
 
 			// if (scope.total.toString().length === 1) scope.total = "\u00A0" + scope.total

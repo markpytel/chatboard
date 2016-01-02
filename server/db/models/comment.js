@@ -4,7 +4,8 @@ var _ = require('lodash');
 
 var schema = new mongoose.Schema({
     date: {
-        type: Date
+        type: Date,
+        default: Date.now
     },
     body: {
         type: String
