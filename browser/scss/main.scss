@@ -35,6 +35,12 @@ body {
     background-color: #E5EFF8;
 }
 
+.pmheader {
+    border-bottom: 1px solid black;
+    box-shadow: 1px 1px 14px -3px black;
+    background: LightSteelBlue;
+}
+
 
 @import 'directives/main';
 @import 'home/main';

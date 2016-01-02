@@ -87,7 +87,8 @@
                 <!-- Snippet -->
                 <div ng-click="hideshowPost(child)" ng-hide="determine(child)">
                     <li class="highlight" style="padding-right: 0px; list-style-type: none">
-                        <span class="col-10" style="margin-left: 5px">{{votes[child._id]}} {{child.body}}</span>
+                        <span class="col-2" ng-class="{'up': sign(child) === 'positive', 'down': sign(child) === 'negative'}" style="margin-left: 5px">{{votes[child._id]}} </span>
+                        <span class="col-8">{{child.body}}</span>
                         <span class="col-2">{{child.author.username}}</span>
                     </li>
                 </div>
@@ -141,7 +142,7 @@
         <li class="list-group-item" style="padding-right: 0px">
             <div class="row">
                 <div class="col-xs-2 downvote"><vote></vote></div>
-                <div class="col-xs-10" style="padding-left: 10px">{{child.body}}</div>
+                <div class="col-xs-10" style="padding-left: 10px;">{{child.body}}</div>
             <div>
         </li>
         <!-- post reply -->
@@ -223,7 +224,7 @@
     <i class="emoji--smile" title=" smile" style="float:right">smile</i> -->
 
     <div class="text-center">           
-        <uib-pagination total-items="numofitems" ng-model="page" ng-click="gotoPage(page)" max-size="maxSize" class="pagination-sm" boundary-links="true" num-pages="numPages"></uib-pagination>
+        <uib-pagination total-items="numofitems" ng-model="page" ng-click="gotoPage(page)" max-size="maxSize" class="pagination-sm" boundary-links="true" num-pages="numPages" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></uib-pagination>
     </div>
 
 

@@ -7,6 +7,7 @@ app.directive('vote', function (Socket, BoardFactory) {
 			scope.up = false;
 			scope.down = false;
 
+
 			if (scope.child.upvotes && (scope.child.upvotes.indexOf(scope.user._id) !== -1)) {
 				scope.up = true;
 			}
