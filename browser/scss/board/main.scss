@@ -62,7 +62,7 @@
   }
 
   .postcontent {
-    width: 95%;
+    width: 93%;
     padding-left: 10px;
     min-height: 42px;
   }
@@ -74,9 +74,9 @@
   .pagination > .active > a:focus,
   .pagination > .active > span:focus {
       z-index: 2;
-      color: #23527c;
-      background-color: GhostWhite;
-      border-color: #ddd;
+      color: #fff;
+      background-color: #777;
+      border-color: #000;
   }
 
   .pagination > li > a:hover,
@@ -86,34 +86,50 @@
     z-index: 2;
     color: #23527c;
     background-color: GhostWhite;
-    border-color: #ddd;
+    border-color: #000;
+  }
+ 
+  .pagination > li > a,
+  .pagination > li > span {
+    z-index: 2;
+    color: #23527c;
+    background-color: #555;
+    border-color: #000;
   }
 
   button:focus {
     outline: none;
   }
 
+  .btn-default {
+    background: #ddd;
+    background-color: #ddd;
+    border-color: #ddd
+  }
+
   .btn-default:focus {
     color: #333;
-    background-color: #fff;
-    border-color: #ccc;
+    background-color: #ddd;
+    border-color: #ddd;
   }
 
   .btn-default:hover {
     color: #333;
-    background-color: LightSteelBlue;
-    border-color: #adadad;
+    background-color: #777;
+    border-color: #777;
   }
 
   .rs {
     /* background-color: #D9EDF7; */
-    background-color: #E5EFF8;
+    /* background-color: #E5EFF8; */
+    background-color: #777;
+    border: #333
   }
 
   .bh {
     color: #333;
-    background-color: LightSteelBlue;
-    border-color: #adadad;
+    background-color: #777;
+    border-color: #777;
   }
 
 }

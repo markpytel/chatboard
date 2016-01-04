@@ -6,7 +6,8 @@ app.config(function($stateProvider) {
         params: {
             savedReply: null,
             modal: null,
-            page: null
+            page: null,
+            displayedReply: null
         },
         controller: 'BoardController',
         templateUrl: 'js/board/board.html',
@@ -18,6 +19,12 @@ app.config(function($stateProvider) {
                 if (!$stateParams.savedReply) return {};
                 else {
                     return $stateParams.savedReply;
+                }
+            },
+            display: function($stateParams) {
+                if (!$stateParams.displayedReply) return {};
+                else {
+                    return $stateParams.displayedReply;
                 }
             },
             user: function(AuthService) {
@@ -49,7 +56,7 @@ app.config(function($stateProvider) {
 
 });
 
-app.controller('BoardController', function($rootScope, $state, $scope, comments, BoardFactory, Socket, reply, $stateParams, user, users, sentpms, recpms, modal, page) {
+app.controller('BoardController', function($rootScope, $state, $scope, comments, BoardFactory, Socket, reply, display, $stateParams, user, users, sentpms, recpms, modal, page) {
 
     // Scope Variables
 
@@ -70,7 +77,7 @@ app.controller('BoardController', function($rootScope, $state, $scope, comments,
     $scope.sentpms = sentpms;
     $scope.recpms = recpms;
     $scope.erasenot = null;
-    $scope.displayed;
+    $scope.displayed = display;
     $scope.replying = $scope.reply.parent;
     $scope.somerep = [];
     $scope.newpost = false;
@@ -132,7 +139,8 @@ app.controller('BoardController', function($rootScope, $state, $scope, comments,
         $state.transitionTo($state.current, {
             savedReply: $scope.reply,
             modal: $scope.modal,
-            page: $scope.page
+            page: $scope.page,
+            displayedReply: $scope.displayed
         }, {
             reload: true,
             inherit: false,
@@ -160,7 +168,8 @@ app.controller('BoardController', function($rootScope, $state, $scope, comments,
         $state.transitionTo($state.current, {
             savedReply: $scope.reply,
             modal: $scope.modal,
-            page: $scope.page
+            page: $scope.page,
+            displayedReply: $scope.displayed
         }, {
             reload: true,
             inherit: false,
@@ -343,6 +352,7 @@ app.controller('BoardController', function($rootScope, $state, $scope, comments,
         reply.upvotes = [user._id];
 
         console.log('reply before sent ', $scope.reply)
+        if ($scope.reply.body.length < 1 || $scope.reply.length > 500) return
         BoardFactory.postNewComment(reply).then(function(newReply) {
             // console.log('CLIENT somerep before emit newPost event ', $scope.somerep)
             Socket.emit('someoneReplying', {

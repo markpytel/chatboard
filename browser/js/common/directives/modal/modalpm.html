@@ -26,12 +26,12 @@
         <div class="modal-body" style="height:300px; overflow-y: scroll; background: #f5f5f5;">
             <ul ng-show="view==='sent'" class="list-group">
                 <li class="list-group-item highlight" ng-repeat="pm in sentpms">
-                    <a href="#" ng-click="$event.preventDefault(); selected.item = item">To: {{pm.pmto.username}}: {{pm.body}}</a>
+                    <span href="#" ng-click="$event.preventDefault(); selected.item = item">To: {{pm.pmto.username}}: {{pm.body}}</span>
                 </li>
             </ul>
             <ul ng-show="view==='rec'" class="list-group">
                 <li class="list-group-item highlight" ng-repeat="pm in recpms">
-                    <a href="#" ng-click="$event.preventDefault(); selected.item = item">From: {{pm.author.username}}: {{pm.body}}</a>
+                    <span href="#" ng-click="$event.preventDefault(); selected.item = item">From: {{pm.author.username}}: {{pm.body}}</span>
                 </li>
             </ul>
         </div>

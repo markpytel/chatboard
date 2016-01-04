@@ -1,4 +1,4 @@
-@import "fullstack-logo";
+@import "logo";
 @import "navbar";
 .downvote {
     margin-top: -8px;
@@ -13,7 +13,7 @@
 }
 
 .up {
-    color: SteelBlue;
+    color: LightSteelBlue;
 }
 
 .down {
@@ -38,5 +38,5 @@
 }
 
 .highlight:hover {
-    background-color: GhostWhite;
+    background-color: #333;
 }
