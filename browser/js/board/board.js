@@ -7,7 +7,8 @@ app.config(function($stateProvider) {
             savedReply: null,
             modal: null,
             page: null,
-            displayedReply: null
+            displayedReply: null,
+            numNewPosts: null
         },
         controller: 'BoardController',
         templateUrl: 'js/board/board.html',
@@ -47,6 +48,12 @@ app.config(function($stateProvider) {
                 console.log('stateparams in page resolve ', $stateParams)
                 if (!$stateParams.page) return 1;
                 else return $stateParams.page;
+            },
+            numPosts: function($stateParams) {
+                console.log('stateparams in num new postsresolve ', $stateParams)
+
+                if (!$stateParams.numNewPosts) return 1;
+                else return ++$stateParams.numNewPosts;
             }
         },
         data: {
@@ -56,7 +63,7 @@ app.config(function($stateProvider) {
 
 });
 
-app.controller('BoardController', function($rootScope, $state, $scope, comments, BoardFactory, Socket, reply, display, $stateParams, user, users, sentpms, recpms, modal, page) {
+app.controller('BoardController', function($rootScope, $state, $scope, comments, BoardFactory, Socket, reply, display, $stateParams, user, users, sentpms, recpms, modal, page, numPosts) {
 
     // Scope Variables
 
@@ -82,6 +89,8 @@ app.controller('BoardController', function($rootScope, $state, $scope, comments,
     $scope.somerep = [];
     $scope.newpost = false;
     $scope.modal = modal;
+    $scope.numNewPosts = numPosts;
+    console.log('newposts', $scope.numNewPosts)
 
     $scope.maxSize = 5;
     $scope.bigTotalItems = 140;
@@ -135,19 +144,28 @@ app.controller('BoardController', function($rootScope, $state, $scope, comments,
     Socket.on('newPost', function() {
         // console.log('CLIENT received newPost event ', $scope.somerep)
         $scope.newpost = true;
+        console.log('numnew posts before transition ', $scope.numNewPosts)
         console.log('scope page before transition ', $scope.page)
         $state.transitionTo($state.current, {
             savedReply: $scope.reply,
             modal: $scope.modal,
             page: $scope.page,
-            displayedReply: $scope.displayed
+            displayedReply: $scope.displayed,
+            numNewPosts: $scope.numNewPosts
         }, {
             reload: true,
             inherit: false,
             notify: true
         });
         $.notify('New Post', 'info')
+        document.title = $scope.numNewPosts + " New Posts";
+        console.log('num new posts after inc ', $scope.numNewPosts)
     });
+
+    $(document).scroll(function (){
+        document.title = "Scroll";
+        $scope.numNewPosts = 1;
+    })
 
     Socket.on('someoneReplying', function (event) {
         // console.log('CLIENT received a someoneReplying event ', event.somerep)
@@ -259,14 +277,11 @@ app.controller('BoardController', function($rootScope, $state, $scope, comments,
     function recSearch(obj) {
 
         obj.mostRecent = new Date(obj.date).getTime()
-        console.log('initial ',obj.mostRecent)
 
         function rsh(curObj) {
             var comp = new Date(curObj.date).getTime()
-            console.log('comp parent ', comp, obj.mostRecent)
             if (comp > obj.mostRecent) {
                 obj.mostRecent = comp;
-                console.log('new most recent post detected ', curObj)
             }
 
             if (curObj.children.length === 0) {
@@ -279,9 +294,7 @@ app.controller('BoardController', function($rootScope, $state, $scope, comments,
             }
         }
 
-        console.log('obj ', obj)
         rsh(obj)
-        console.log('obj after sorting ', obj)
 
         return obj
 

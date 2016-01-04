@@ -89,7 +89,7 @@
                     <li class="highlight" style="padding-right: 0px; list-style-type: none">
                         <span class="col-2" ng-class="{'up': sign(child) === 'positive', 'down': sign(child) === 'negative'}" style="margin-left: 5px;">{{votes[child._id]}} </span>
                         <span class="col-8 posttext" style="word-break: break-all;">{{child.body.slice(0,100)}}</span>
-                        <span class="col-2 posttext" style="color:black">{{child.author.username}}</span>
+                        <span class="col-2 posttext" style="color:#333">{{child.author.username}}</span>
                     </li>
                 </div>
                 <!-- Post -->
@@ -124,7 +124,7 @@
                     </li>
                 </ul>
                 <!-- someone replying -->
-                <li class="list-group-item" style="padding: 0px 15px; background-color:LightSteelBlue" ng-show="detSomeRep(child._id)">
+                <li class="list-group-item somerep" ng-show="detSomeRep(child._id)">
                     <span class="col-12">Someone is replying to this post</span>
                 </li>
                 <div style="padding-left: 10px" ng-include="'commentTree'"></div>
@@ -162,7 +162,7 @@
             </li>
         </ul>
         <!-- someone replying -->
-        <li class="list-group-item" style="padding: 0px 15px; background-color:LightSteelBlue" ng-show="detSomeRep(child._id)">
+        <li class="list-group-item somerep" ng-show="detSomeRep(child._id)">
             <span class="col-12">Someone is replying to this post</span>
         </li>
         <!-- nested replies -->
