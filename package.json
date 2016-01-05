@@ -1,5 +1,5 @@
 {
-  "name": "Paper Planes",
+  "name": "PaperPlanes",
   "version": "1.0.0",
   "description": "Chat board",
   "main": "server/start.js",
