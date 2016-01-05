@@ -1,4 +1,4 @@
-@import "fullstack-logo";
+@import "logo";
 @import "navbar";
 .downvote {
     margin-top: -8px;
@@ -13,7 +13,7 @@
 }
 
 .up {
-    color: SteelBlue;
+    color: LightSteelBlue;
 }
 
 .down {
@@ -23,4 +23,20 @@
 .centervote {
     text-align: center;
     display: table-cell;
+}
+
+.btn:focus,
+.btn:active:focus,
+.btn.active:focus,
+.btn.focus,
+.btn:active.focus,
+.btn.active.focus {
+  outline: thin dotted;
+  /* outline: 5px auto -webkit-focus-ring-color; */
+  outline: 2px auto LightSteelBlue;
+  outline-offset: -2px;
+}
+
+.highlight:hover {
+    background-color: #333;
 }

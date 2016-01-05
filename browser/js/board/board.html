@@ -1,5 +1,26 @@
 <section id="board">
-    <modalpm></modalpm>
+    <div class="row" style="height:60px">
+        <modalpm></modalpm>
+        <button type="button" class="btn btn-default pull-right" ng-class="{'bh': detRep({_id: 'new'})}" ng-click="formReply({_id: 'new'})">
+            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+        </button>
+    </div>
+
+    <div class="text-center">           
+        <uib-pagination total-items="numofitems" ng-model="page" ng-click="gotoPage(page)" max-size="maxSize" class="pagination-sm" boundary-links="true" num-pages="numPages" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></uib-pagination>
+    </div>
+
+
+    <!-- Previous attempt at pagination -->
+    <!--
+    <div>
+        <button ng-repeat="page in arrOfPages" ng-click="gotoPage($index)">Page{{$index+1}}</button>
+
+        <span>Page</span>
+        <span ng-repeat="page in arrOfPages" ng-click="gotoPage($index)" style="color:blue">{{$index+1}}.</span>
+    </div> 
+-->
+
     <!-- 
     <script type="text/ng-template" id="group-template.html">
         <div class="panel {{panelClass || 'panel-default'}}">
@@ -38,16 +59,37 @@
             </div>
         </ul>
     </script>
- -->
+-->
+
+
+    <!-- create new thread -->
+    <ul focus-on-show class="list-group" style="margin-bottom: 15px;" ng-show="detRep({_id: 'new'})">
+        <!-- reply header -->
+        <li class="list-group-item" style="padding: 0px 15px; background-color:Gainsboro;">
+            <span class="col-2">{{user.username}}</span>
+            <span class="col-2 pull-right"></span>
+        </li>
+        <!-- reply body -->
+        <li class="list-group-item rs" style="padding-right: 0px">
+            <span class="col-12">
+                <textarea class="reply rs posttext" ng-model="reply.body" placeholder="Reply Here"></textarea>
+                <button ng-click="submitReply()"><i class="fa fa-paper-plane"></i></button>
+                <button ng-click="formReply({_id: 'new'})"><i class="fa fa-times"></i></button>
+            </span>
+        </li>
+    </ul>
+
+
     <!-- template for nested replies -->
     <script type="text/ng-template" id="commentTree">
         <ul class="list-group" ng-if="child.children" style="padding-left: 5px; margin-bottom: 0px">
             <div ng-repeat="child in child.children" style="border-left: solid Gainsboro 1px">
                 <!-- Snippet -->
                 <div ng-click="hideshowPost(child)" ng-hide="determine(child)">
-                    <li style="padding-right: 0px; list-style-type: none">
-                        <span class="col-10" style="margin-left: 5px">{{votes[child._id]}} {{child.body}}</span>
-                        <span class="col-2">{{child.author.username}}</span>
+                    <li class="highlight" style="padding-right: 0px; list-style-type: none">
+                        <span class="col-2" ng-class="{'up': sign(child) === 'positive', 'down': sign(child) === 'negative'}" style="margin-left: 5px;">{{votes[child._id]}} </span>
+                        <span class="col-8 posttext" style="word-break: break-all;">{{child.body.slice(0,100)}}</span>
+                        <span class="col-2 posttext" style="color:#333">{{child.author.username}}</span>
                     </li>
                 </div>
                 <!-- Post -->
@@ -58,10 +100,10 @@
                         <span class="col-2 pull-right" ng-click="formReply(child)"><i class="fa fa-reply"></i></span>
                     </li>
                     <!-- post content -->
-                    <li class="list-group-item" style="padding-right: 0px">
+                    <li class="list-group-item backpost" style="padding-right: 0px">
                         <div class="row">
                             <div class="col-xs-2 downvote"><vote></vote></div>
-                            <div class="col-xs-10 postcontent" ng-click="hideshowPost(child)">{{child.body}}</div>
+                            <div class="col-xs-10 postcontent posttext" ng-click="hideshowPost(child)" ng-bind-html="child.body | linky"></div>
                         <div>
                     </li>
                 </div>
@@ -73,16 +115,16 @@
                         <span class="col-2 pull-right"></span>
                     </li>
                     <!-- reply body -->
-                    <li class="list-group-item" style="padding-right: 0px">
+                    <li class="list-group-item rs" style="padding-right: 0px">
                         <span class="col-12">
-                            <textarea class="reply" ng-model="reply.body" placeholder="Reply Here"></textarea>
+                            <textarea class="reply rs posttext" ng-model="reply.body" placeholder="Reply Here"></textarea>
                             <button ng-click="submitReply()"><i class="fa fa-paper-plane"></i></button>
                             <button ng-click="formReply(child)"><i class="fa fa-times"></i></button>
                         </span>
                     </li>
                 </ul>
                 <!-- someone replying -->
-                <li class="list-group-item" style="padding: 0px 15px; background-color:LightSteelBlue" ng-show="detSomeRep(child._id)">
+                <li class="list-group-item somerep" ng-show="detSomeRep(child._id)">
                     <span class="col-12">Someone is replying to this post</span>
                 </li>
                 <div style="padding-left: 10px" ng-include="'commentTree'"></div>
@@ -97,10 +139,10 @@
             <span class="col-2 pull-right" ng-click="formReply(child)"><i class="fa fa-reply"></i></span>
         </li>
         <!-- post content -->
-        <li class="list-group-item" style="padding-right: 0px">
+        <li class="list-group-item backpost" style="padding-right: 0px">
             <div class="row">
                 <div class="col-xs-2 downvote"><vote></vote></div>
-                <div class="col-xs-10" style="padding-left: 10px">{{child.body}}</div>
+                <div class="col-xs-10 postcontent posttext" ng-bind-html="child.body | linky"></div>
             <div>
         </li>
         <!-- post reply -->
@@ -111,16 +153,16 @@
                 <span class="col-2 pull-right"></span>
             </li>
             <!-- reply body -->
-            <li class="list-group-item" style="padding-right: 0px">
+            <li class="list-group-item rs" style="padding-right: 0px">
                 <span class="col-12">
-                    <textarea class="reply" ng-model="reply.body" placeholder="Reply Here"></textarea>
+                    <textarea class="reply rs posttext" ng-model="reply.body" placeholder="Reply Here"></textarea>
                     <button ng-click="submitReply()"><i class="fa fa-paper-plane"></i></button>
                     <button ng-click="formReply(child)"><i class="fa fa-times"></i></button>
                 </span>
             </li>
         </ul>
         <!-- someone replying -->
-        <li class="list-group-item" style="padding: 0px 15px; background-color:LightSteelBlue" ng-show="detSomeRep(child._id)">
+        <li class="list-group-item somerep" ng-show="detSomeRep(child._id)">
             <span class="col-12">Someone is replying to this post</span>
         </li>
         <!-- nested replies -->
@@ -176,10 +218,14 @@
         Comment: <textarea ng-model="reply.body">{{reply.body}}</textarea>
     </span>   -->
 
-    <span style="float:right">
+ <!--    <span style="float:right">
         <emoji>:smile:</emoji>
     </span>
-    <i class="emoji--smile" title=" smile" style="float:right">smile</i>
+    <i class="emoji--smile" title=" smile" style="float:right">smile</i> -->
+
+    <div class="text-center">           
+        <uib-pagination total-items="numofitems" ng-model="page" ng-click="gotoPage(page)" max-size="maxSize" class="pagination-sm" boundary-links="true" num-pages="numPages" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></uib-pagination>
+    </div>
 
 
 

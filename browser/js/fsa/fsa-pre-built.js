@@ -95,6 +95,14 @@
                 });
         };
 
+        this.signUp = function (credentials) {
+            return $http.post('/signup', credentials)
+                .then(onSuccessfulLogin)
+                .catch(function () {
+                    return $q.reject({ message: 'Whatever'});
+                });
+        }
+
         this.logout = function () {
             return $http.get('/logout').then(function () {
                 Session.destroy();

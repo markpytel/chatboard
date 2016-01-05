@@ -60,30 +60,33 @@ router.post('/', ensureAuthenticated, function(req, res, next) {
     }).then(null, next)
 })
 
+
 router.put('/:id', ensureAuthenticated, function(req, res, next) {
 
-    function removeVote(commentId, userId, direction) {
-        return Comment.findOne({_id:commentId}).then(function(comment) {
-            if (direction === "up") comment.upvotes.splice(comment.upvotes.indexOf(userId), 1)
-            if (direction === "down") comment.downvotes.splice(comment.upvotes.indexOf(userId), 1)
-            return comment.save();
-        })
+    function removeVote(direction, comment) {
+        if (direction === "up") comment.upvotes.splice(comment.upvotes.indexOf(req.user._id), 1)
+        if (direction === "down") comment.downvotes.splice(comment.downvotes.indexOf(req.user._id), 1)
+        return comment;
     }
 
-    function addVote(commentId, userId, direction) {
-        return Comment.findOne({_id:commentId}).then(function(comment) {
-            if (direction === "up") comment.upvotes.push(userId)
-            if (direction === "down") comment.downvotes.push(userId)
-            return comment.save();
-        })
+    function addVote(direction, comment) {
+        if (direction === "up") comment.upvotes.push(req.user._id)
+        if (direction === "down") comment.downvotes.push(req.user._id)
+        return comment;
     }
 
-    if (req.body.voteconfig.rem) {
-        removeVote(req.params.id, req.body.username, req.body.voteconfig.rem).then(function(savedDoc) {
-        })
-    }
-    if (req.body.voteconfig.add) {
-        addVote(req.params.id, req.body.username, req.body.voteconfig.add).then(function(savedDoc) {
-        })
-    }
+    Comment.findOne({_id:req.params.id}).then(function(comment){
+        if (req.body.voteconfig.rem) {
+            removeVote(req.body.voteconfig.rem, comment)
+        }
+        if (req.body.voteconfig.add) {
+            addVote(req.body.voteconfig.add, comment)
+        }
+
+        return comment.save()
+    }).then(function (savedDoc) {
+        res.status(200).json(savedDoc)
+    });
+
+
 })

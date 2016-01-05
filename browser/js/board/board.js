@@ -5,7 +5,10 @@ app.config(function($stateProvider) {
         url: '/board',
         params: {
             savedReply: null,
-            modal: null
+            modal: null,
+            page: null,
+            displayedReply: null,
+            numNewPosts: null
         },
         controller: 'BoardController',
         templateUrl: 'js/board/board.html',
@@ -17,6 +20,12 @@ app.config(function($stateProvider) {
                 if (!$stateParams.savedReply) return {};
                 else {
                     return $stateParams.savedReply;
+                }
+            },
+            display: function($stateParams) {
+                if (!$stateParams.displayedReply) return {};
+                else {
+                    return $stateParams.displayedReply;
                 }
             },
             user: function(AuthService) {
@@ -34,6 +43,17 @@ app.config(function($stateProvider) {
             modal: function($stateParams) {
                 if (!$stateParams.modal) return false;
                 else return true;
+            },
+            page: function($stateParams) {
+                console.log('stateparams in page resolve ', $stateParams)
+                if (!$stateParams.page) return 1;
+                else return $stateParams.page;
+            },
+            numPosts: function($stateParams) {
+                console.log('stateparams in num new postsresolve ', $stateParams)
+
+                if (!$stateParams.numNewPosts) return 1;
+                else return ++$stateParams.numNewPosts;
             }
         },
         data: {
@@ -43,25 +63,39 @@ app.config(function($stateProvider) {
 
 });
 
-app.controller('BoardController', function($rootScope, $state, $scope, comments, BoardFactory, Socket, reply, $stateParams, user, users, sentpms, recpms, modal) {
+app.controller('BoardController', function($rootScope, $state, $scope, comments, BoardFactory, Socket, reply, display, $stateParams, user, users, sentpms, recpms, modal, page, numPosts) {
 
     // Scope Variables
 
+    $scope.page = page;
     $scope.votes = {};
     $scope.comments = comments;
     $scope.children = [];
     $scope.children = makeTree();
+    $scope.numofitems = $scope.children.length
+    $scope.children = sortTrees();
+    $scope.arrOfPages = [];
+    $scope.arrOfPages = makeArrayOfPages();
+    // $scope.children = $scope.arrOfPages[$scope.page];
+    console.log('posts ', $scope.children)
     $scope.reply = reply;
     $scope.user = user;
     $scope.users = users;
     $scope.sentpms = sentpms;
     $scope.recpms = recpms;
     $scope.erasenot = null;
-    $scope.displayed;
+    $scope.displayed = display;
     $scope.replying = $scope.reply.parent;
     $scope.somerep = [];
     $scope.newpost = false;
     $scope.modal = modal;
+    $scope.numNewPosts = numPosts;
+    // console.log('newposts', $scope.numNewPosts)
+
+    $scope.maxSize = 5;
+    $scope.bigTotalItems = 140;
+    $scope.bigCurrentPage = 1;
+    $scope.numPages = 10;
 
     // Socket Listener Event
 
@@ -75,8 +109,6 @@ app.controller('BoardController', function($rootScope, $state, $scope, comments,
 
     // Event listeners
 
-    // This should be an angular emitter since its communicating client side
-    // only
     if ($scope.modal) {
         console.log('this only happens if you had the window open')
         $rootScope.$emit('newpms', {sentpms: sentpms, recpms: recpms}) 
@@ -112,14 +144,28 @@ app.controller('BoardController', function($rootScope, $state, $scope, comments,
     Socket.on('newPost', function() {
         // console.log('CLIENT received newPost event ', $scope.somerep)
         $scope.newpost = true;
+        // console.log('numnew posts before transition ', $scope.numNewPosts)
+        // console.log('scope page before transition ', $scope.page)
         $state.transitionTo($state.current, {
-            savedReply: $scope.reply
+            savedReply: $scope.reply,
+            modal: $scope.modal,
+            page: $scope.page,
+            displayedReply: $scope.displayed,
+            numNewPosts: $scope.numNewPosts
         }, {
             reload: true,
             inherit: false,
             notify: true
         });
+        $.notify('New Post', 'info')
+        document.title = $scope.numNewPosts + " New";
+        // console.log('num new posts after inc ', $scope.numNewPosts)
     });
+
+    $(document).scroll(function (){
+        document.title = "Paper Planes";
+        $scope.numNewPosts = 1;
+    })
 
     Socket.on('someoneReplying', function (event) {
         // console.log('CLIENT received a someoneReplying event ', event.somerep)
@@ -135,9 +181,13 @@ app.controller('BoardController', function($rootScope, $state, $scope, comments,
 
     Socket.on('pm', function (event) {   
         $scope.newpost = true;
+        // console.log('scope page before transition ', $scope.page)
+
         $state.transitionTo($state.current, {
             savedReply: $scope.reply,
-            modal: $scope.modal
+            modal: $scope.modal,
+            page: $scope.page,
+            displayedReply: $scope.displayed
         }, {
             reload: true,
             inherit: false,
@@ -158,9 +208,11 @@ app.controller('BoardController', function($rootScope, $state, $scope, comments,
         else $scope.displayed = child._id;
     };
     $scope.detRep = function(child) {
+        // console.log('childid truth ', child._id, $scope.replying)
         return child._id === $scope.replying;
     };
     $scope.hideshowReply = function(child) {
+
         if ($scope.replying === child._id) {
             $scope.replying = null;
             $scope.reply = {};
@@ -181,6 +233,25 @@ app.controller('BoardController', function($rootScope, $state, $scope, comments,
         return answer;
     }
 
+    // Highlight New Thread if you reply to anything
+    $scope.detRepSome = function() {
+        // console.log('scope replying from detrepmsome ', $scope.replying)
+        if ($scope.replying) return true;
+        else return false;
+    // Highlight New Thread Button if anyone is replying to anything
+    }
+    $scope.anyRep = function() {
+        if ($scope.somerep.length || $scope.replying) return true;
+        else return false;
+    }
+
+    // Determine the color for the vote counter
+    $scope.sign = function (child) {
+        if ($scope.votes[child._id] > 0) return 'positive';
+        if ($scope.votes[child._id] < 0) return 'negative'; 
+    }
+
+
     // Generate Comment Tree
 
     function makeTree() {
@@ -199,7 +270,78 @@ app.controller('BoardController', function($rootScope, $state, $scope, comments,
                 start.push(node);
             }
         }
+
         return start;
+    }
+
+    function recSearch(obj) {
+
+        obj.mostRecent = new Date(obj.date).getTime()
+
+        function rsh(curObj) {
+            var comp = new Date(curObj.date).getTime()
+            if (comp > obj.mostRecent) {
+                obj.mostRecent = comp;
+            }
+
+            if (curObj.children.length === 0) {
+                return;
+            }
+            else {
+                for (var i=0; i<curObj.children.length; i++) {
+                    rsh(curObj.children[i]);
+                }
+            }
+        }
+
+        rsh(obj)
+
+        return obj
+
+    }
+
+    function sortTrees() {
+
+        var start = $scope.children.slice();
+
+        for (var i=0; i<start.length; i++) {
+            start[i] = recSearch(start[i]);
+        }
+
+
+        // console.log('start inside maketree ', start)
+
+        // console.log(start[0].date)
+        // console.log(new Date(start[0].date).getTime())
+
+        // start = start.sort(function (b,a) {
+        //     return new Date(a.date).getTime() - new Date(b.date).getTime();
+        // })
+
+        start = start.sort(function (a,b) {
+            return b.mostRecent - a.mostRecent;
+        })
+
+        return start;
+    }
+
+    function makeArrayOfPages() {
+
+        var pages = [];
+
+        var length = Math.ceil($scope.children.length/10)
+        pages.push([]);
+
+        for (var i=1; i<length+1; i++) {
+            pages.push($scope.children.slice((i-1)*10,i*10))
+        }
+
+        return pages;
+    }
+
+    $scope.gotoPage = function(index) {
+        $scope.page = index;
+        $scope.children=$scope.arrOfPages[index]
     }
 
     // Reply Functions
@@ -218,10 +360,12 @@ app.controller('BoardController', function($rootScope, $state, $scope, comments,
     };
 
     $scope.submitReply = function() {
+        if ($scope.reply.parent === 'new') $scope.reply.parent = null;
         var reply = $scope.reply;
         reply.upvotes = [user._id];
 
-        console.log('reply before sent ', $scope.reply)
+        // console.log('reply before sent ', $scope.reply)
+        if ($scope.reply.body.length < 1 || $scope.reply.length > 500) return
         BoardFactory.postNewComment(reply).then(function(newReply) {
             // console.log('CLIENT somerep before emit newPost event ', $scope.somerep)
             Socket.emit('someoneReplying', {
@@ -245,7 +389,9 @@ app.controller('BoardController', function($rootScope, $state, $scope, comments,
 
     // $('.list-group').on('click', function(){
     //     console.log('A post was clicked')
-    //     $.notify("I'm over here")
+    //     $.notify("I'm over here", {autoHide: false})
     // });
 
 });
+
+

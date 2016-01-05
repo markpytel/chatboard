@@ -3,7 +3,7 @@
 }
 
 body {
-    background: #fdfdfd;
+    background: #555;
 }
 
 @mixin clearfix {
@@ -29,6 +29,29 @@ body {
 .reply:focus {
     outline: none;
 }
+
+.rs {
+    /* background-color: #D9EDF7; */
+    background-color: #E5EFF8;
+    /* background: #777; */
+    border: #333;
+}
+
+.pmheader {
+    border-bottom: 1px solid black;
+    box-shadow: 1px 1px 14px -3px black;
+    background: LightSteelBlue;
+}
+
+.backpost {
+    background: #777;
+    border: #333;
+}
+
+.posttext {
+    color: white;
+}
+
 
 @import 'directives/main';
 @import 'home/main';
