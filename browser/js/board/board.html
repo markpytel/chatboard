@@ -103,7 +103,7 @@
                     <li class="list-group-item backpost" style="padding-right: 0px">
                         <div class="row">
                             <div class="col-xs-2 downvote"><vote></vote></div>
-                            <div class="col-xs-10 postcontent posttext" ng-click="hideshowPost(child)">{{child.body}}</div>
+                            <div class="col-xs-10 postcontent posttext" ng-click="hideshowPost(child)" ng-bind-html="child.body | linky"></div>
                         <div>
                     </li>
                 </div>
@@ -142,7 +142,7 @@
         <li class="list-group-item backpost" style="padding-right: 0px">
             <div class="row">
                 <div class="col-xs-2 downvote"><vote></vote></div>
-                <div class="col-xs-10 postcontent posttext">{{child.body}}</div>
+                <div class="col-xs-10 postcontent posttext" ng-bind-html="child.body | linky"></div>
             <div>
         </li>
         <!-- post reply -->

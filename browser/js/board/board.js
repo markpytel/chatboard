@@ -76,7 +76,7 @@ app.controller('BoardController', function($rootScope, $state, $scope, comments,
     $scope.children = sortTrees();
     $scope.arrOfPages = [];
     $scope.arrOfPages = makeArrayOfPages();
-    $scope.children = $scope.arrOfPages[$scope.page];
+    // $scope.children = $scope.arrOfPages[$scope.page];
     console.log('posts ', $scope.children)
     $scope.reply = reply;
     $scope.user = user;
@@ -90,7 +90,7 @@ app.controller('BoardController', function($rootScope, $state, $scope, comments,
     $scope.newpost = false;
     $scope.modal = modal;
     $scope.numNewPosts = numPosts;
-    console.log('newposts', $scope.numNewPosts)
+    // console.log('newposts', $scope.numNewPosts)
 
     $scope.maxSize = 5;
     $scope.bigTotalItems = 140;
@@ -144,8 +144,8 @@ app.controller('BoardController', function($rootScope, $state, $scope, comments,
     Socket.on('newPost', function() {
         // console.log('CLIENT received newPost event ', $scope.somerep)
         $scope.newpost = true;
-        console.log('numnew posts before transition ', $scope.numNewPosts)
-        console.log('scope page before transition ', $scope.page)
+        // console.log('numnew posts before transition ', $scope.numNewPosts)
+        // console.log('scope page before transition ', $scope.page)
         $state.transitionTo($state.current, {
             savedReply: $scope.reply,
             modal: $scope.modal,
@@ -158,12 +158,12 @@ app.controller('BoardController', function($rootScope, $state, $scope, comments,
             notify: true
         });
         $.notify('New Post', 'info')
-        document.title = $scope.numNewPosts + " New Posts";
-        console.log('num new posts after inc ', $scope.numNewPosts)
+        document.title = $scope.numNewPosts + " New";
+        // console.log('num new posts after inc ', $scope.numNewPosts)
     });
 
     $(document).scroll(function (){
-        document.title = "Scroll";
+        document.title = "Paper Planes";
         $scope.numNewPosts = 1;
     })
 
@@ -181,7 +181,7 @@ app.controller('BoardController', function($rootScope, $state, $scope, comments,
 
     Socket.on('pm', function (event) {   
         $scope.newpost = true;
-        console.log('scope page before transition ', $scope.page)
+        // console.log('scope page before transition ', $scope.page)
 
         $state.transitionTo($state.current, {
             savedReply: $scope.reply,
@@ -235,7 +235,7 @@ app.controller('BoardController', function($rootScope, $state, $scope, comments,
 
     // Highlight New Thread if you reply to anything
     $scope.detRepSome = function() {
-        console.log('scope replying from detrepmsome ', $scope.replying)
+        // console.log('scope replying from detrepmsome ', $scope.replying)
         if ($scope.replying) return true;
         else return false;
     // Highlight New Thread Button if anyone is replying to anything
@@ -364,7 +364,7 @@ app.controller('BoardController', function($rootScope, $state, $scope, comments,
         var reply = $scope.reply;
         reply.upvotes = [user._id];
 
-        console.log('reply before sent ', $scope.reply)
+        // console.log('reply before sent ', $scope.reply)
         if ($scope.reply.body.length < 1 || $scope.reply.length > 500) return
         BoardFactory.postNewComment(reply).then(function(newReply) {
             // console.log('CLIENT somerep before emit newPost event ', $scope.somerep)

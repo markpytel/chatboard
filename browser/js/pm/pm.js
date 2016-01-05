@@ -72,16 +72,16 @@ app.controller('ModalInstanceCtrl', function ($rootScope, $scope, $uibModalInsta
 
 
   $scope.validUser = function () {
-    console.log('selected in valid user' ,$scope.selected)
+    // console.log('selected in valid user' ,$scope.selected)
     if ($scope.users.indexOf($scope.newPM.pmto) !== -1) {
-      console.log('valid user')
+      // console.log('valid user')
       PMFactory.postNewPM($scope.newPM).then(function(newPM){
-        console.log('response from new pm ', newPM)
+        // console.log('response from new pm ', newPM)
         Socket.emit('pm')
       })
     }
     else {
-      console.log('invalid user');
+      // console.log('invalid user');
     }
   }
 

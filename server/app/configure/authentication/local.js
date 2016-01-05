@@ -54,4 +54,26 @@ module.exports = function (app) {
 
     });
 
+    app.post('/signup', function (req, res, next) {
+        console.log('signup route ', req.body)
+        User.findOne({username: req.body.username}).then(function (user){
+            if (user) {
+                console.log('already a user with this username')
+            }
+            else {
+                User.create(req.body).then(function (user){
+                    req.logIn(user, function (loginErr) {
+                        if (loginErr) return next(loginErr);
+
+                        console.log('logging in ', user.username)
+                        res.status(200).send({
+                            user: user.sanitize()
+                        })
+                    })
+                })
+            }
+        })
+
+    })
+
 };
