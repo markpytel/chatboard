@@ -45,13 +45,12 @@ app.config(function($stateProvider) {
                 else return true;
             },
             page: function($stateParams) {
-                console.log('stateparams in page resolve ', $stateParams)
+                // console.log('stateparams in page resolve ', $stateParams)
                 if (!$stateParams.page) return 1;
                 else return $stateParams.page;
             },
             numPosts: function($stateParams) {
-                console.log('stateparams in num new postsresolve ', $stateParams)
-
+                // console.log('stateparams in num new postsresolve ', $stateParams)
                 if (!$stateParams.numNewPosts) return 1;
                 else return ++$stateParams.numNewPosts;
             }
@@ -77,7 +76,7 @@ app.controller('BoardController', function($rootScope, $state, $scope, comments,
     $scope.arrOfPages = [];
     $scope.arrOfPages = makeArrayOfPages();
     // $scope.children = $scope.arrOfPages[$scope.page];
-    console.log('posts ', $scope.children)
+    // console.log('posts ', $scope.children)
     $scope.reply = reply;
     $scope.user = user;
     $scope.users = users;
@@ -110,7 +109,7 @@ app.controller('BoardController', function($rootScope, $state, $scope, comments,
     // Event listeners
 
     if ($scope.modal) {
-        console.log('this only happens if you had the window open')
+        // console.log('this only happens if you had the window open')
         $rootScope.$emit('newpms', {sentpms: sentpms, recpms: recpms}) 
     }
 
