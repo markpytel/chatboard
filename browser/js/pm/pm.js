@@ -33,7 +33,7 @@ app.controller('ModalDemoCtrl', function ($scope, $uibModal, $log, Socket) {
     });
 
     modalInstance.result.then(function (selectedItem) {
-      $scope.selected = selectedItem;
+      // $scope.selected = selectedItem;
     }, function () {
       $scope.$parent.modal = false;
       $log.info('Modal dismissed at: ' + new Date());
@@ -57,7 +57,7 @@ app.controller('ModalInstanceCtrl', function ($rootScope, $scope, $uibModalInsta
   $scope.sentpms = sentpms;
   $scope.recpms = recpms;
   $scope.users = users;
-  $scope.selected;
+  // $scope.selected;
   $scope.view='rec';
 
   $rootScope.$on('newpms', function (event, data) {
