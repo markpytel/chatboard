@@ -270,7 +270,7 @@ app.controller('BoardController', function($rootScope, $state, $scope, comments,
                 start.push(node);
             }
         }
-
+        console.log('start being returned ', start)
         return start;
     }
 
