@@ -254,6 +254,7 @@ app.controller('BoardController', function($rootScope, $state, $scope, comments,
     // Generate Comment Tree
 
     function makeTree() {
+        console.log('comments in maketree ', comments)
         var map = {};
         var start = [];
         var node;
