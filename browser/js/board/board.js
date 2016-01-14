@@ -259,8 +259,11 @@ app.controller('BoardController', function($rootScope, $state, $scope, comments,
         var start = [];
         var node;
         for (var i = 0; i < comments.length; i++) {
+
             node = comments[i];
+            console.log('node ', node)
             node.children = [];
+            console.log('node children ', node.children)
             $scope.votes[node._id] = node.upvotes.length - node.downvotes.length;
             map[node._id] = i;
             if (node.parent) {
