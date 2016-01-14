@@ -4,7 +4,7 @@ app.factory('BoardFactory', function ($http) {
 	
 	function getAllComments() {
 		return $http.get('/api/comments').then(function (response) {
-			// console.log('Inside factory function ', response.data);
+			console.log('Inside factory function ', response.data);
 			return response.data;
 		});
 	}

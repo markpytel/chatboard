@@ -7,5 +7,5 @@ app.config(function ($stateProvider) {
 });
 
 app.controller('homeCtrl', function ($state) {
-	$state.go('login');
+	$state.go('board');
 });
