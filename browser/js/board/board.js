@@ -64,7 +64,6 @@ app.config(function($stateProvider) {
 
 app.controller('BoardController', function($rootScope, $state, $scope, comments, BoardFactory, Socket, reply, display, $stateParams, user, users, sentpms, recpms, modal, page, numPosts) {
 
-    debugger;
     // Scope Variables
 
     $scope.page = page;

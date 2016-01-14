@@ -7,5 +7,6 @@ app.config(function ($stateProvider) {
 });
 
 app.controller('homeCtrl', function ($state) {
+	debugger;
 	$state.go('board');
 });
