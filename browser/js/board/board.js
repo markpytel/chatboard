@@ -267,7 +267,8 @@ app.controller('BoardController', function($rootScope, $state, $scope, comments,
             $scope.votes[node._id] = node.upvotes.length - node.downvotes.length;
             map[node._id] = i;
             if (node.parent) {
-                comments[map[node.parent]].children=[];
+                // comments[map[node.parent]].children=[];
+                if (comments[map[node.parent]])
                 comments[map[node.parent]].children.push(node);
             } else {
                 node.parent = null;
